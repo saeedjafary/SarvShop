@@ -13,7 +13,7 @@ import reducer from './components/reducer.js'
 import { connect } from "react-redux"
 import {createStackNavigator} from 'react-navigation-stack';
 import * as Font from 'expo-font';
-                
+import {View,Text} from 'react-native'             
        
 import {                          
   createAppContainer
@@ -103,25 +103,38 @@ export default class App extends React.Component {
   constructor(props){
     super(props);
     this.state = {           
-      loading: true
+      loading: true,
+      fontLoaded:false
 
     }
   }    
-  componentDidMount () {
-    Font.loadAsync({
-      'IRANSansMobile': require('./assets/fonts/IRANSansMobile.ttf'),
-    });
-      
-  }     
+  async componentDidMount() {
+  await Font.loadAsync({
+    'IRANSansMobile': require('./assets/fonts/IRANSansMobile.ttf'),
+  });
+  this.setState({ fontLoaded: true });
+
+}
+    
   async componentWillMount() { 
   
   }
   render() {
+    if(this.state.fontLoaded){
     return (    
       <Provider store={store}>
           <Navigator color={1}/>
         </Provider>  
-      ); 
+      );
+      
+    }else{
+      return (  
+        <View style={{marginTop:100}}>
+            <Text>Please Wait ...</Text>
+        </View>
+      );
+
+    }
   } 
 }
 

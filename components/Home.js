@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { StyleSheet ,ScrollView,ListView,SafeAreaView,FlatList,TouchableOpacity } from 'react-native'; 
+import { StyleSheet ,ScrollView,SafeAreaView,FlatList,TouchableOpacity } from 'react-native'; 
 import { connect } from "react-redux"
 import Server from './Server.js'
 import { Image } from 'react-native';
@@ -49,7 +49,7 @@ const styles = StyleSheet.create({
     textAlign: 'center'
   }
 });
-Drawer.defaultProps.styles.mainOverlay.elevation = 0;   
+//Drawer.defaultProps.styles.mainOverlay.elevation = 0;   
      
 let cards = [];      
 function Item({ title }) {
@@ -71,7 +71,6 @@ class Home extends React.Component {
   }
   constructor(props){   
     super(props);    
-    const ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
 
         this.Server = new Server();
     this.state = {
@@ -79,7 +78,6 @@ class Home extends React.Component {
             HsrajDate:moment(),
             GotoLogin:false,
             GotoCart:false,
-            dataSource: ds.cloneWithRows(['row 1', 'row 2']),
             day:0,
             hours:0,
             minutes:0,
@@ -151,10 +149,12 @@ openDrawer(){
                         }
                       }, 1000); 
                  var maximg = 'https://marketapi.sarvapps.ir/' + response.data.result[0].fileUploaded.split("public")[1];
-                    that.setState({
-                        MaxObj:response.data.result[0],
+  
+                 that.setState({
+                        MaxObj:response.data.result,
                         maximg:maximg
-                    })   
+                    }) 
+                    
                 }     
           that.getProducts(6)
     } 
@@ -255,7 +255,28 @@ let that = this;
     </View>
           </View>
             
-        
+          <ScrollView horizontal  >
+          <Grid>
+          
+          <Row>
+             <Col>
+              <Image source={{uri:'https://cdnw.elicdn.com/Blog/wp-content/uploads/2018/12/2321.jpg'}} style={{height: 200, width: 200,marginRight: 2}}/>   
+             </Col>
+             <Col>
+             <Image source={{uri:'https://cdnw.elicdn.com/Blog/wp-content/uploads/2018/12/23-1.jpg'}} style={{height: 200, width: 200,marginRight: 2}}/>   
+             </Col>
+             <Col>
+             <Image source={{uri:'https://cdnw.elicdn.com/Blog/wp-content/uploads/2018/12/322.jpg'}} style={{height: 200, width: 200,marginRight: 2}}/>   
+             </Col>    
+             <Col>
+             <Image source={{uri:'https://cdnw.elicdn.com/Blog/wp-content/uploads/2018/12/23213.jpg'}} style={{height: 200, width: 200,marginRight: 2}}/>   
+             </Col>
+             
+          </Row>
+
+          </Grid>
+
+          </ScrollView>
        
         <ScrollView >     
         
@@ -268,18 +289,19 @@ let that = this;
              
                 </Col>
              </Row>
-             {this.state.MaxObj.length > 0 &&
+             {this.state.MaxObj.length > 0 &&   
               <Row >
                 <Col style={{height: 300 }}>
         <Card>
             <CardItem>
               <Left>
                 <Thumbnail source={{uri:'https://www.pizzagooshe.com/Content/UploadFiles/contents/LG_7f48205b-a12c-4dde-a99b-f7a5b5eb022e.png'}} />
+                </Left>
+
                 <Body>
-                  <Text style={{fontFamily:'IRANSansMobile'}}>{this.state.MaxObj.title}</Text>
-                  <Text style={{fontFamily:'IRANSansMobile'}} note>{this.state.MaxObj.subTitle}</Text>
+                  <Text style={{fontFamily:'IRANSansMobile'}}>{this.state.MaxObj[0].title}</Text>
+                  <Text style={{fontFamily:'IRANSansMobile'}} note>{this.state.MaxObj[0].subTitle}</Text>
                 </Body>
-              </Left>
             </CardItem>
             <CardItem cardBody>
               <Image source={{uri:this.state.maximg}} style={{height: 200, width: null, flex: 1}}/>
@@ -301,7 +323,7 @@ let that = this;
                <Grid>
            {this.state.Products4[1] &&
           <Row style={{height:200}}>
-            <Col onPress={() => navigate('Products', {id: this.state.Products4[0]._id})}>
+            <Col onPress={() => navigate('Products', {id: this.state.Products4[0]._id})} style={{margin:2}}>
               <View> 
                 <Image style={{ height: '100%',opacity:'0.8'}} source={{uri:'https://marketapi.sarvapps.ir/' + this.state.Products4[0].fileUploaded.split("public")[1]}} />
                <View style={{position:'absolute',bottom:50,right:0,backgroundColor:'rgba(0,0,0,0.5)',padding:5,width:'100%'}}>  
@@ -315,7 +337,7 @@ let that = this;
                 </View>
               </View>
             </Col>
-            <Col onPress={() => navigate('Products', {id: this.state.Products4[1]._id})}>
+            <Col onPress={() => navigate('Products', {id: this.state.Products4[1]._id})} style={{margin:2}}>
               <View>
                 <Image style={{ height: '100%',opacity:'0.8'}} source={{uri:'https://marketapi.sarvapps.ir/' + this.state.Products4[1].fileUploaded.split("public")[1]}} />
                <View style={{position:'absolute',bottom:50,right:0,backgroundColor:'rgba(0,0,0,0.5)',padding:5,width:'100%'}}>  
@@ -333,7 +355,7 @@ let that = this;
            }
            {this.state.Products4[3] &&
           <Row style={{height:200}}>
-            <Col onPress={() => navigate('Products', {id: this.state.Products4[2]._id})}>
+            <Col onPress={() => navigate('Products', {id: this.state.Products4[2]._id})} style={{margin:2}}>
                <View>
                 <Image style={{ height: '100%',opacity:'0.8'}} source={{uri:'https://marketapi.sarvapps.ir/' + this.state.Products4[2].fileUploaded.split("public")[1]}} />
                <View style={{position:'absolute',bottom:50,right:0,backgroundColor:'rgba(0,0,0,0.5)',padding:5,width:'100%'}}>  
@@ -347,7 +369,7 @@ let that = this;
                 </View>
               </View>
             </Col>
-            <Col onPress={() => navigate('Products', {id: this.state.Products4[3]._id})}>
+            <Col onPress={() => navigate('Products', {id: this.state.Products4[3]._id})} style={{margin:2}}>
                <View>
                 <Image style={{ height: '100%',opacity:'0.8'}} source={{uri:'https://marketapi.sarvapps.ir/' + this.state.Products4[3].fileUploaded.split("public")[1]}} />
                <View style={{position:'absolute',bottom:50,right:0,backgroundColor:'rgba(0,0,0,0.5)',padding:5,width:'100%'}}>  

@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { StyleSheet ,ScrollView,ListView,SafeAreaView,FlatList,TouchableOpacity } from 'react-native'; 
+import { StyleSheet ,ScrollView,SafeAreaView,FlatList,TouchableOpacity } from 'react-native'; 
 import { connect } from "react-redux"
 import Server from './Server.js'
 import { Image } from 'react-native';
@@ -12,7 +12,7 @@ import SideBar from './SideBar.js'
 
      
 let cards = [];      
-function Item({ title }) {
+function Item({ title }) {      
   return (
     <View style={{margin:5}}>
       <Button ><Text>{title}</Text></Button>
@@ -22,7 +22,6 @@ function Item({ title }) {
 class HeaderBox extends React.Component {   
   constructor(props){   
     super(props);    
-          const ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
 
         this.Server = new Server();
     this.state = {
@@ -30,7 +29,6 @@ class HeaderBox extends React.Component {
             HsrajDate:moment(),
             GotoLogin:false,
             GotoCart:false,
-            dataSource: ds.cloneWithRows(['row 1', 'row 2']),
             day:0,
             hours:0,
             minutes:0,

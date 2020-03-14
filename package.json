@@ -10,6 +10,7 @@
   "dependencies": {
     "@react-navigation/drawer": "^5.0.0",
     "axios": "^0.19.0",
+    "deprecated-react-native-listview": "0.0.6",
     "expo": "^36.0.0",
     "moment-jalaali": "^0.9.1",
     "native-base": "^2.13.8",
