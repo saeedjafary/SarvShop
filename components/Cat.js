@@ -40,8 +40,7 @@ class Cat extends React.Component {
     }
     let ECallBack = function(error){  
      alert(error)   
-    }  
-        
+    }     
    this.Server.send("https://marketapi.sarvapps.ir/MainApi/GetProductsPerCat",{
             id : this.state.id,
             token:  AsyncStorage.getItem('api_token').then((value) => {

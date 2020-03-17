@@ -22,8 +22,7 @@ function Item({ title }) {
 class HeaderBox extends React.Component {   
   constructor(props){   
     super(props);    
-
-        this.Server = new Server();
+    this.Server = new Server();
     this.state = {
             MaxObj:[],
             HsrajDate:moment(),
@@ -47,6 +46,8 @@ class HeaderBox extends React.Component {
   }  
 
   findUser(){
+    console.warn("aaa")   
+
     let that = this;
       AsyncStorage.getItem('CartNumber').then((value) => {
                         console.log(value) 
@@ -69,7 +70,7 @@ class HeaderBox extends React.Component {
      //alert(error)   
     }  
         
-   this.Server.send("https://marketapi.sarvapps.ir/MainApi/checktoken",           {token:value},SCallBack,ECallBack) 
+   this.Server.send("https://marketapi.sarvapps.ir/MainApi/checktoken",{token:value},SCallBack,ECallBack) 
 
     } )
   }   
@@ -80,10 +81,14 @@ class HeaderBox extends React.Component {
     })
   }
   componentDidUpdate(){
-     let that = this;
-        
-    if(this.props.navigatin && this.props.navigation.state  && this.props.navigation.state.params && this.props.navigation.state.params.p && !this.state.username)
+     let that = this;  
+     console.warn(this.props.navigation.state.params)
+
+    if( this.props.navigation.state.params  && this.props.navigation.state.params.p=="LoginTrue")
+     {
+      alert(1)
       this.findUser(); 
+     } 
   }
   componentDidMount() { 
     this.findUser(); 
@@ -131,39 +136,51 @@ class HeaderBox extends React.Component {
           <TouchableOpacity onPress={() => { navigate('Cart', {
             onGoBack: () => this.refresh(),
          })}}>
-              <View  ><Text style={{fontFamily:'IRANSansMobile'}}><Icon type="Ionicons" name="cart" style={{fontSize: 30, color: 'red'}}/> ({this.state.CartNumber}) </Text></View>
+              <View  ><Text style={{fontFamily:'IRANSansMobile',color:'#1abc9c'}}><Icon type="Ionicons" name="cart" style={{fontSize: 30, color: '#1abc9c'}}/> ({this.state.CartNumber}) </Text></View>
             </TouchableOpacity>
          
          }
          </Col>  
           <Col >
-         {!this.props.title && this.state.username &&
-         <View style={{flex: 1,justifyContent: 'center',alignItems: 'center'}}><Text style={{fontFamily:'IRANSansMobile'}}>{this.state.name  ?  this.state.name : 'خوش آمدید'}</Text></View>
-         }
-         {
-           this.props.title && 
-           <View style={{flex: 1,justifyContent: 'center',alignItems: 'center'}}><Text style={{fontFamily:'IRANSansMobile'}}>{this.props.title}</Text></View>
-         }
-         </Col>
-     <Col style={{width:100}}>   
-{!this.state.username &&   
-         <View>
-           <Button  onPress={() => {  navigate('Login')}} iconLeft  info>
-                       <Icon name='person' />
-
-            <Text style={{fontFamily:'IRANSansMobile'}}> ورود</Text>
-           </Button>
-           
-          </View>
-}{this.state.username &&
-<View>
+         {this.state.username &&
+   <TouchableOpacity onPress={() => {  navigate('Login')}} style={{flex:1,flexDirection:'row',justifyContent:'space-between',backgroundColor:'#333',padding:5,borderRadius:5,margin:5}}   >
   
+  <View >
+  <Text style={{fontFamily:'IRANSansMobile',paddingTop:4,color:'#fff',paddingLeft:5}}> محیط کاربری</Text>  
 
-  <Button  onPress={this.logout} iconLeft  info >
-            <Icon name='exit' />
-            <Text style={{fontFamily:'IRANSansMobile'}}> خروج</Text>
-           </Button>
-          </View>
+  </View>
+  <View  >
+     <Icon name='settings' style={{paddingTop:-5,color:'#ccc'}} />          
+  </View>
+ </TouchableOpacity> 
+
+          }
+         
+         </Col>
+     <Col style={{width:120}}>      
+{!this.state.username &&   
+     
+ <TouchableOpacity onPress={() => {  navigate('Login')}} style={{flex:1,flexDirection:'row',backgroundColor:'rgb(0, 179, 134)',padding:5,borderRadius:5,margin:5,justifyContent:'space-between'}}   >
+  
+  <View >
+  <Text style={{fontFamily:'IRANSansMobile',paddingTop:4,paddingLeft:5,color:'#fff'}}> ورود / ثبت نام </Text>     
+
+  </View>
+  
+ </TouchableOpacity>   
+
+
+}{this.state.username &&
+<TouchableOpacity onPress={this.logout} style={{flex:1,flexDirection:'row',backgroundColor:'red',padding:5,borderRadius:5,margin:5}}   >
+  
+   <View style={{flexBasis:60}}>
+   <Text style={{fontFamily:'IRANSansMobile',paddingTop:4,color:'#fff',paddingLeft:5}}> خروج</Text>
+
+   </View>
+   <View>
+      <Icon name='exit' style={{paddingTop:0,color:'#ccc'}} />
+   </View>
+  </TouchableOpacity>   
 
 }  
           </Col> 

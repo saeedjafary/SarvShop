@@ -44,7 +44,7 @@ class Login extends React.Component {
             type: 'LoginTrueUser',    
             CartNumber:response.data.CartNumber
           })
-          that.props.navigation.navigate('Home',{p:'a'}) 
+          that.props.navigation.navigate('Home',{p:'LoginTrue'}) 
 
            //AsyncStorage.getItem('api_token').then((value) => alert(value))
 
