@@ -80,8 +80,13 @@ openDrawer(){
   this.drawer._root.open();
 
 }
+ConvertNumToFarsi(text){
+  var id= ['۰','۱','۲','۳','۴','۵','۶','۷','۸','۹'];
+  return text.toString().replace(/[0-9]/g, function(w){
+   return id[+w]
+  });
+}
   componentDidUpdate(){
-    //console.warn(this.props.navigation.state.params.p);
     if(this.props.navigation && this.props.navigation.state && this.props.navigation.state.params && this.props.navigation.state.params.p=="LoginTrue"){
       this.props.navigation.state.params.p="a";
       this.setState({
@@ -221,7 +226,7 @@ let that = this;
  getProductsPerCat(param,lastIndex){
   let that = this;
 
-  that.Server.send("https://marketapi.sarvapps.ir/MainApi/GetProductsPerCat",{id:param._id},function(response){
+  that.Server.send("https://marketapi.sarvapps.ir/MainApi/GetProductsPerCat",{id:param._id,limit:6},function(response){
         let res = {
           name : param.name,                 
           id:  param._id,
@@ -232,9 +237,8 @@ let that = this;
           case 1 :{
 
             that.setState({     
-              CatData1: res   
+              CatData1: res      
             })   
-            console.warn(that.state.CatData1)
 
             break;
           }
@@ -371,11 +375,11 @@ let that = this;
                   <Image source={{uri:'https://marketapi.sarvapps.ir/' + v.fileUploaded.split("public")[1]}} style={{height: 180, width: 150,marginRight: 8}}/>   
                   }
                   <View>
-                    <Text style={{textAlign:'center',fontFamily:'IRANSansMobile',fontSize:12,paddingBottom:5,paddingTop:10,color:'gray',width:150,whiteSpace:'nowrap',overflow:'hidden',textOverflow:'ellipsis'}} >{v.title}</Text>
-                    <Text style={{textAlign:'center',fontFamily:'IRANSansMobile',fontSize:14,color:'gray',width:150,whiteSpace:'nowrap',overflow:'hidden',textOverflow:'ellipsis',textDecorationLine:'line-through'}}>{v.price} تومان</Text>
+                    <Text style={{textAlign:'center',fontFamily:'IRANSansMobile',fontSize:12,paddingBottom:5,paddingTop:10,color:'gray',width:150,whiteSpace:'nowrap',overflow:'hidden',textOverflow:'ellipsis'}} >{this.ConvertNumToFarsi(v.title)}</Text>
+                    <Text style={{textAlign:'center',fontFamily:'IRANSansMobile',fontSize:14,color:'gray',width:150,whiteSpace:'nowrap',overflow:'hidden',textOverflow:'ellipsis',textDecorationLine:'line-through'}}>{this.ConvertNumToFarsi(v.price)} تومان</Text>
 
-                    <Text style={{textAlign:'center',fontFamily:'IRANSansMobile',fontSize:14,color:'#000',width:150,whiteSpace:'nowrap',overflow:'hidden',textOverflow:'ellipsis'}}>{v.price - ((v.price * v.off)/100)} تومان</Text>
-                <Text style={{textAlign:'center',fontFamily:'IRANSansMobile',fontSize:17,color:'red',width:150,whiteSpace:'nowrap',overflow:'hidden',textOverflow:'ellipsis'}}>{v.off}% تخفیف </Text>
+                    <Text style={{textAlign:'center',fontFamily:'IRANSansMobile',fontSize:14,color:'#000',width:150,whiteSpace:'nowrap',overflow:'hidden',textOverflow:'ellipsis'}}>{this.ConvertNumToFarsi(v.price - ((v.price * v.off)/100))} تومان</Text>
+                <Text style={{textAlign:'center',fontFamily:'IRANSansMobile',fontSize:17,color:'red',width:150,whiteSpace:'nowrap',overflow:'hidden',textOverflow:'ellipsis'}}>{this.ConvertNumToFarsi(v.off)}% تخفیف </Text>
                   </View>
                 </View>
              </Col>
@@ -472,7 +476,7 @@ let that = this;
             <View style={{padding:5,width:'100%',marginBottom:20,marginTop:20,flex:1, flexDirection: 'row'}}>
                 
              <View style={{flexGrow: 1}}>
-                <TouchableOpacity onPress={() => navigate('Cat', {id: this.state.CatData1.id})}>
+                <TouchableOpacity onPress={() => navigate('Cat', {id: this.state.CatData1.id,name:this.state.CatData1.name})}>
                   <Text style={{textAlign:'right',fontFamily:'IRANSansMobile',color:'gray'}}> 
                     بیشتر...
                   </Text>
@@ -515,7 +519,7 @@ let that = this;
             <View style={{padding:5,width:'100%',marginBottom:20,marginTop:20,flex:1, flexDirection: 'row'}}>
                 
              <View style={{flexGrow: 1}}>
-                <TouchableOpacity onPress={() => navigate('Cat', {id: this.state.CatData2.id})}>
+                <TouchableOpacity onPress={() => navigate('Cat', {id: this.state.CatData2.id,name:this.state.CatData2.name})}>
                   <Text style={{textAlign:'right',fontFamily:'IRANSansMobile',color:'gray'}}> 
                     بیشتر...
                   </Text>
@@ -558,7 +562,7 @@ let that = this;
             <View style={{padding:5,width:'100%',marginBottom:20,marginTop:20,flex:1, flexDirection: 'row'}}>
                 
              <View style={{flexGrow: 1}}>
-                <TouchableOpacity onPress={() => navigate('Cat', {id: this.state.CatData3.id})}>
+                <TouchableOpacity onPress={() => navigate('Cat', {id: this.state.CatData3.id,name:this.state.CatData3.name})}>
                   <Text style={{textAlign:'right',fontFamily:'IRANSansMobile',color:'gray'}}> 
                     بیشتر...
                   </Text>
@@ -591,7 +595,7 @@ let that = this;
           }
           </Row>
 
-          </Grid>
+          </Grid>   
           </ScrollView>
           </View>
         }       
@@ -601,7 +605,7 @@ let that = this;
             <View style={{padding:5,width:'100%',marginBottom:20,marginTop:20,flex:1, flexDirection: 'row'}}>
                 
              <View style={{flexGrow: 1}}>
-                <TouchableOpacity onPress={() => navigate('Cat', {id: this.state.CatData4.id})}>
+                <TouchableOpacity onPress={() => navigate('Cat', {id: this.state.CatData4.id,name:this.state.CatData4.name})}>
                   <Text style={{textAlign:'right',fontFamily:'IRANSansMobile',color:'gray'}}> 
                     بیشتر...
                   </Text>

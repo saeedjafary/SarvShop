@@ -99,6 +99,20 @@ class Products extends React.Component {
         
 
     }
+    ConvertNumToFarsi(text){
+        var id= ['۰','۱','۲','۳','۴','۵','۶','۷','۸','۹'];
+        return text.replace(/[0-9]/g, function(w){
+         return id[+w]
+        });
+    }
+    ConvertNumToLatin(text){
+      return text;
+      return text.replace(/[\u0660-\u0669]/g, function (c) {
+            return c.charCodeAt(0) - 0x0660;
+        }).replace(/[\u06f0-\u06f9]/g, function (c) {
+          return c.charCodeAt(0) - 0x06f0;   
+      });
+  }
   getProduct(){
     let that = this;
    
@@ -124,6 +138,12 @@ class Products extends React.Component {
         };    
    this.Server.send("https://marketapi.sarvapps.ir/MainApi/getProducts",param,SCallBack,ECallBack) 
   }
+  ConvertNumToFarsi(text){
+    var id= ['۰','۱','۲','۳','۴','۵','۶','۷','۸','۹'];
+    return text.toString().replace(/[0-9]/g, function(w){
+     return id[+w]
+    });
+  }
   render() {
         const {navigate} = this.props.navigation;
         
@@ -135,55 +155,122 @@ class Products extends React.Component {
         <Content>
         <ScrollView>
         {this.state.Products.length>0 &&
+        <View >
           <Grid>
              <Row>  
              <Col >  
-                <View style={{backgroundColor:'#eee'}}>
-                  <Text style={{fontFamily:'IRANSansMobile',textAlign:'center',paddingRight:10,fontSize:25}}>{this.state.Products[0].title}</Text>
-                  <Text style={{fontFamily:'IRANSansMobile',textAlign:'center',paddingRight:10}}>{this.state.Products[0].subTitle}</Text>
-                  <Text style={{fontFamily:'IRANSansMobile',textAlign:'right',padding:10,color:'red'}}>{this.state.Products[0].price - ((this.state.Products[0].price * this.state.Products[0].off)/100)} تومان</Text>
+                <View >
+                  <Text style={{fontFamily:'IRANSansMobile',textAlign:'center',paddingRight:10,fontSize:25,marginTop:20}}>{this.state.Products[0].title}</Text>
+                </View>
+                <View >
+                  <Text style={{fontFamily:'IRANSansMobile',textAlign:'center',paddingRight:10,marginTop:20,color:'#333'}}>{this.state.Products[0].subTitle}</Text>
+                </View>
+                
+                <View  style={{flex:1,flexDirection:'row',justifyContent:'center'}}>
+                  <Text style={{padding:5,borderRadius:5,margin:5,fontFamily:'IRANSansMobile',textAlign:'center',padding:10,textDecorationLine:'line-through'}}>{this.state.Products[0].off ? this.ConvertNumToFarsi(this.state.Products[0].price) + "تومان" : "" } </Text>
+                </View>
+                {
+                 this.state.Products[0].off !="0" &&
+                  <View  style={{flex:1,flexDirection:'row',justifyContent:'center',position:'relative',top:-48,right:60}}>
+                    <View style={{borderRadius:30,backgroundColor:'red',padding:1}}>
+                    <Text style={{padding:5,fontFamily:'IRANSansMobile',textAlign:'center',color:'#fff',fontSize:10}}>%{this.ConvertNumToFarsi(this.state.Products[0].off)} </Text>
 
-               
+                    </View>
+                  </View>
+                }
+                <View  style={{flex:1,flexDirection:'row',justifyContent:'center',marginBottom:5}}>
+                <View style={{borderRadius:5}}>
+                  <Text style={{backgroundColor:'#333',padding:5,fontFamily:'IRANSansMobile',textAlign:'center',paddingTop:10,paddingBottom:10,paddingRight:20,paddingLeft:20,color:'#fff',fontSize:25,marginTop:20,marginBottom:10}}>{this.ConvertNumToFarsi(this.state.Products[0].price - ((this.state.Products[0].price * this.state.Products[0].off)/100))} تومان</Text>
                 </View>
-                <View>
-                  <Text style={{fontFamily:'IRANSansMobile',textAlign:'right',padding:10}}>{this.state.Products[0].desc}</Text>
                 </View>
+                {this.state.Products[0].desc !="-" &&
+                <View style={{flex:1,flexDirection:'row',justifyContent:'center',marginTop:15,marginBottom:15,borderWidth: 0.5,borderColor: '#d6d7da',backgroundColor:'rgba(132, 127, 127, 0.05)'}}>
+                 <View style={{width:'100%'}}>
+                 <Text style={{fontFamily:'IRANSansMobile',textAlign:'right',paddingRight:10,paddingTop:5,color:'gray',fontSize:10}}>جزئیات</Text>
+                 <Text style={{fontFamily:'IRANSansMobile',textAlign:'right',lineHeight:25,padding:10}}>{this.state.Products[0].desc}</Text>
+
+                  </View> 
+                </View>
+                }
              </Col>
              
              </Row>
-           
-        <Row>
-        <Col >
-<TouchableOpacity onPress={() => this.changeImage(5)} ><Image source={{uri:'https://marketapi.sarvapps.ir/' + this.state.img5 }} style={{border:1,height: 60, width: null, flex: 1}}/></TouchableOpacity>
-</Col><Col >
-<TouchableOpacity onPress={() => this.changeImage(4)} ><Image  source={{uri:'https://marketapi.sarvapps.ir/' + this.state.img4}} style={{height: 60, width: null, flex: 1}}/></TouchableOpacity></Col><Col >
-<TouchableOpacity onPress={() => this.changeImage(3)} ><Image source={{uri:'https://marketapi.sarvapps.ir/' + this.state.img3}} style={{height: 60, width: null, flex: 1}}/></TouchableOpacity></Col><Col >
-<TouchableOpacity onPress={() => this.changeImage(2)} ><Image source={{uri:'https://marketapi.sarvapps.ir/' + this.state.img2}} style={{height: 60, width: null, flex: 1}}/></TouchableOpacity></Col><Col >
-<TouchableOpacity onPress={() => this.changeImage(1)} ><Image source={{uri:'https://marketapi.sarvapps.ir/' + this.state.img1}} style={{border:1,height: 60, width: null, flex: 1}}/></TouchableOpacity>
-        </Col>
-        </Row>
-          <Row>  
-             <Col style={{  height: 300}}>  
-             <Image source={{uri:'https://marketapi.sarvapps.ir/' + this.state.originalImage}} style={{ width: null, flex: 1}}/>
-        </Col>
-        </Row>
         </Grid>
-}
-  <Grid>
-    <Row>
-      <Col  style={{width:'20%'}}>
+          <Grid >
+          <Row >
+                   <Col style={{width:'80%',paddingRight:5}}>
+                  <Row>  
+                    <Col>  
+                        <Image source={{uri:'https://marketapi.sarvapps.ir/' + this.state.originalImage}}  style={{height: 300}} />
+                    </Col>
+                  </Row>
+                  </Col>
+                   <Col >
+                      <Row>
+                        <Col style={{paddingBottom:2,opacity:0.5}}>
+                        {this.state.img1 !="nophoto.png" &&
+                    
+                          <TouchableOpacity onPress={() => this.changeImage(1)} ><Image source={{uri:'https://marketapi.sarvapps.ir/' + this.state.img1 }} style={{border:1,height: 60, width: 100}}/></TouchableOpacity>
+                          
+                          }
+                        </Col>
+                        </Row><Row>
+                        <Col style={{paddingBottom:2,opacity:0.5}}>
+                        {this.state.img2 !="nophoto.png" &&
+                    
+                          <TouchableOpacity onPress={() => this.changeImage(2)} ><Image source={{uri:'https://marketapi.sarvapps.ir/' + this.state.img2 }} style={{border:1,height: 60, width: 100}}/></TouchableOpacity>
+                          
+                          }
+                        </Col>
+                        </Row><Row>
+                        <Col style={{paddingBottom:2,opacity:0.5}}>
+                        {this.state.img3 !="nophoto.png" &&
+                    
+                          <TouchableOpacity onPress={() => this.changeImage(3)} ><Image source={{uri:'https://marketapi.sarvapps.ir/' + this.state.img3 }} style={{border:1,height: 60, width: 100}}/></TouchableOpacity>
+                          
+                          }
+                        </Col>
+                        </Row><Row>
+                        <Col style={{paddingBottom:2,opacity:0.5}}>
+                        {this.state.img4 !="nophoto.png" &&
+                    
+                          <TouchableOpacity onPress={() => this.changeImage(4)} ><Image source={{uri:'https://marketapi.sarvapps.ir/' + this.state.img4 }} style={{border:1,height: 60, width: 100}}/></TouchableOpacity>
+                          
+                          }
+                        </Col>
+                        </Row><Row>
+                        <Col style={{paddingBottom:2,opacity:0.5}}>
+                        {this.state.img5 !="nophoto.png" &&
+                    
+                          <TouchableOpacity onPress={() => this.changeImage(5)} ><Image source={{uri:'https://marketapi.sarvapps.ir/' + this.state.img5 }} style={{border:1,height: 60, width: 100}}/></TouchableOpacity>
+                          
+                          }
+                        </Col>
+          
+                      </Row>
+                    
+                    </Col>
+                
+                   
+                  </Row>
+          
+                  </Grid>
+                  </View>
+      
+      }   
+  <View style={{flex:1,flexDirection:'row',justifyContent:'center',margin:15}}>
+      <View  style={{width:'20%'}}>
           <TouchableOpacity onPress={() => this.ChangeCount(1)}><Text style={{fontFamily:'IRANSansMobile',fontSize:50,textAlign:'center'}}>+</Text></TouchableOpacity>
-      </Col>
-      <Col style={{width:'60%'}}>
-          <Input value={this.state.Count} keyboardType="number-pad" name="username"                        onChangeText={(text) => this.setState({Count:text})  } style={{border:1,textAlign:'center',fontSize:50}}  />
-      </Col>
-      <Col style={{width:'20%'}}>
+      </View>
+      <View style={{width:'60%'}}>
+          <Input value={this.ConvertNumToFarsi(this.state.Count)} keyboardType="number-pad" name="username"   onChangeText={(text) => this.setState({Count:this.ConvertNumToLatin(text)})  } style={{border:1,textAlign:'center',fontSize:50,fontFamily:'IRANSansMobile'}}  />
+      </View>
+      <View style={{width:'20%'}}>
           <TouchableOpacity  onPress={() => this.ChangeCount(-1)}><Text style={{fontFamily:'IRANSansMobile',fontSize:50,textAlign:'center'}}>-</Text></TouchableOpacity>
-      </Col>
-    </Row>
-  </Grid>
-  <View style={{fontFamily:'IRANSansMobile',textAlign:'center',marginBottom:10,marginTop:10}}>
-      <Button iconLeft light onPress={() => this.SendToCart()}>
+      </View>
+  </View>
+  <View style={{flex:1,flexDirection:'row',justifyContent:'center',margin:15}}>
+      <Button iconLeft success onPress={() => this.SendToCart()}>
             <Icon name='cart' />
             <Text style={{fontFamily:'IRANSansMobile',textAlign:'center'}}>انتقال به سبد خرید</Text>
           </Button>

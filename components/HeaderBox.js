@@ -46,7 +46,6 @@ class HeaderBox extends React.Component {
   }  
 
   findUser(){
-    console.warn("aaa")   
 
     let that = this;
       AsyncStorage.getItem('CartNumber').then((value) => {
@@ -82,7 +81,6 @@ class HeaderBox extends React.Component {
   }
   componentDidUpdate(){
      let that = this;  
-     console.warn(this.props.navigation.state.params)
 
     if( this.props.navigation.state.params  && this.props.navigation.state.params.p=="LoginTrue")
      {
