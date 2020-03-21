@@ -240,7 +240,7 @@ let SCallBack = function(response){
                             
     return (   
     <Container>
-           <Header>
+      <Header>
           <Left>
             <Button transparent onPress={() => this.props.navigation.goBack()}>
               <Icon name='arrow-back' />
@@ -257,62 +257,73 @@ let SCallBack = function(response){
          {this.state.type=='' &&
  
   <View>
-   <Text style={{textAlign:'center',marginTop:10}}>ورود به محیط کاربری</Text>
-          <Form>
+   <Text style={{textAlign:'center',marginTop:25,fontFamily:'IRANSansMobile',fontSize:25,color:'#333'}}>ثبت نام</Text>
+          <Form style={{marginTop:35}}>
            
             <Item inlineLabel>
               <Input value={this.state.username} keyboardType="number-pad" name="username"                        onChangeText={(text) => this.setState({username:text})  }  />
-              <Label>موبایل</Label>
+              <Label style={{fontFamily:'IRANSansMobile'}}>موبایل</Label>
 
             </Item>
             <Item inlineLabel >
                <Input value={this.state.password} secureTextEntry={true} keyboardType="number-pad" name="password"   onChangeText={(text) => this.setState({password:text})  }  />
-               <Label>رمز عبور</Label>
+               <Label style={{fontFamily:'IRANSansMobile'}}>رمز عبور</Label>
             </Item>
             <Item inlineLabel >
                <Input value={this.state.password2} secureTextEntry={true} keyboardType="number-pad" name="password2"   onChangeText={(text) => this.setState({password2:text})  }  />
-               <Label>تکرار رمز عبور</Label>
+               <Label style={{fontFamily:'IRANSansMobile'}}>تکرار رمز عبور</Label>
             </Item>  
             {this.state.AfterFirstStep &&
             <Item inlineLabel >
             <Input value={this.state.SecurityCode} secureTextEntry={true} keyboardType="number-pad" name="SecurityCode"   onChangeText={(text) => this.setState({SecurityCode:text})  }  />
              
-                  <Label>کد امنیتی</Label>
+            <Label style={{fontFamily:'IRANSansMobile'}}>کد امنیتی</Label>
 					  </Item>
             } 
-              <Button iconLeft info style={{marginTop:20}} onPress ={this.Register}>
-            <Icon name='arrow-back' />
-            <Text>ثبت نام</Text>
-          </Button>
+            <View style={{flex:1,flexDirection:'row',justifyContent:'center',marginBottom:25,marginTop:45}}>
+                <Button iconLeft success onPress ={this.Register}>
+                      <Icon name='arrow-back' />
+                      <Text style={{fontFamily:'IRANSansMobile',textAlign:'center'}}>ثبت نام</Text>
+                    </Button>
+            </View> 
+           
          
           </Form>   
  
   </View>
  }{this.state.type=='changePass' &&
+
+ <View>
+   <Text style={{textAlign:'center',marginTop:25,fontFamily:'IRANSansMobile',fontSize:25,color:'#333'}}>بازیابی رمز عبور</Text>
+    
  
-  <Form>
+  <Form style={{marginTop:35}}>
            
             <Item inlineLabel>
               <Input value={this.state.username} keyboardType="number-pad" name="username"                        onChangeText={(text) => this.setState({username:text})  }  />
-              <Label>موبایل</Label>
+              <Label style={{fontFamily:'IRANSansMobile'}}>موبایل</Label>
 
             </Item>
              
-              <Button iconLeft info style={{marginTop:20}} onPress ={this.GetNewPassword}>
-            <Icon name='arrow-back' />
-            <Text>دریافت رمز عبور</Text>
-          </Button>
+     
+
+          <View style={{flex:1,flexDirection:'row',justifyContent:'center',marginBottom:25,marginTop:45}}>
+                <Button iconLeft success onPress ={this.GetNewPassword}>
+                      <Icon name='arrow-back' />
+                      <Text style={{fontFamily:'IRANSansMobile',textAlign:'center'}}>دریافت رمز عبور</Text>
+                    </Button>
+            </View>
           {this.state.Waiting &&
           <View style={{marginTop:15}}>
               <Label style={{textAlign:'center',padding:10}}>لطفا صبر کنید</Label>
               </View>
           }
           <View style={{marginTop:15}}>
-          <Label style={{textAlign:'center'}}>{this.state.HasError}</Label>
+          <Label style={{textAlign:'center',fontFamily:'IRANSansMobile'}}>{this.state.HasError}</Label>
           </View>
          
           </Form>   
- 
+ </View>
  
  
  }

@@ -260,13 +260,13 @@ class Products extends React.Component {
       }   
   <View style={{flex:1,flexDirection:'row',justifyContent:'center',margin:15}}>
       <View  style={{width:'20%'}}>
-          <TouchableOpacity onPress={() => this.ChangeCount(1)}><Text style={{fontFamily:'IRANSansMobile',fontSize:50,textAlign:'center'}}>+</Text></TouchableOpacity>
+          <TouchableOpacity onPress={() => this.ChangeCount(1)}><Text style={{fontFamily:'IRANSansMobile',fontSize:40,textAlign:'center'}}>+</Text></TouchableOpacity>
       </View>
       <View style={{width:'60%'}}>
-          <Input value={this.ConvertNumToFarsi(this.state.Count)} keyboardType="number-pad" name="username"   onChangeText={(text) => this.setState({Count:this.ConvertNumToLatin(text)})  } style={{border:1,textAlign:'center',fontSize:50,fontFamily:'IRANSansMobile'}}  />
+          <Input value={this.ConvertNumToFarsi(this.state.Count)} keyboardType="number-pad" name="username"   onChangeText={(text) => this.setState({Count:this.ConvertNumToLatin(text)})  } style={{border:1,textAlign:'center',fontSize:40,fontFamily:'IRANSansMobile'}}  />
       </View>
       <View style={{width:'20%'}}>
-          <TouchableOpacity  onPress={() => this.ChangeCount(-1)}><Text style={{fontFamily:'IRANSansMobile',fontSize:50,textAlign:'center'}}>-</Text></TouchableOpacity>
+          <TouchableOpacity  onPress={() => this.ChangeCount(-1)}><Text style={{fontFamily:'IRANSansMobile',fontSize:40,textAlign:'center'}}>-</Text></TouchableOpacity>
       </View>
   </View>
   <View style={{flex:1,flexDirection:'row',justifyContent:'center',margin:15}}>

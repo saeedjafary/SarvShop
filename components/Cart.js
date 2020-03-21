@@ -59,25 +59,25 @@ class Cart extends React.Component {
   }  
  
   componentDidMount() {
-       let that = this;
-    alert(1)
-   AsyncStorage.getItem('api_token').then((value) => {
-   this.setState({
-    api_token : value
-   })
-   that.Server.send("https://marketapi.sarvapps.ir/MainApi/checktoken",{
-      token:that.state.api_token
-    },function(response){
-      that.setState({
-        UserId : response.data.authData.userId
+
+      let that = this;
+      AsyncStorage.getItem('api_token').then((value) => {
+      this.setState({
+        api_token : value
       })
+      that.Server.send("https://marketapi.sarvapps.ir/MainApi/checktoken",{
+          token:that.state.api_token
+        },function(response){
+          that.setState({
+            UserId : response.data.authData.userId
+          })
 
-      that.getCartItems();
+          that.getCartItems();
 
-    },function(error){
-        alert(error)
-    })
-   })
+        },function(error){
+            alert(error)
+        })
+      })
    
     
   }
@@ -91,7 +91,8 @@ class Cart extends React.Component {
       if(C==-1 && this.state.ItemCount[I] <= 1  )
           return;
       let ItemCount = this.state.ItemCount;
-      ItemCount[I] = parseInt(ItemCount[I])+C+"";
+      ItemCount[I] = parseInt(ItemCount[I])+parseInt(C)+"";
+      console.warn(ItemCount[I])
       /*this.setState({
         ItemCount : ItemCount
       })*/
@@ -110,6 +111,12 @@ class Cart extends React.Component {
         }
         this.Server.send("https://marketapi.sarvapps.ir/MainApi/changeCart",param,SCallBack,ECallBack)
 
+  }
+  ConvertNumToFarsi(text){
+    var id= ['۰','۱','۲','۳','۴','۵','۶','۷','۸','۹'];
+    return text.toString().replace(/[0-9]/g, function(w){
+     return id[+w]
+    });
   }
   getCartItems(){
         let that=this;
@@ -131,7 +138,6 @@ class Cart extends React.Component {
 
                 })     
                 AsyncStorage.setItem('CartNumber',CartNumber.toString());
-    
                 that.setState({
                     lastPrice:lastPrice,
                     GridData:response.data.result,
@@ -160,35 +166,56 @@ class Cart extends React.Component {
         
         <Content>
         <ScrollView>
-        <View>
-        <Text   style={{fontFamily:"IRANSansMobile",textAlign:'center',marginTop:10,marginBottom:10}}>
-            مبلغ قابل پرداخت  
-            &nbsp;&nbsp;<Text style={{fontSize:25,color:'red'}}>{this.state.lastPrice}</Text> &nbsp;&nbsp; 
-            تومان
-        </Text>
-        <Button style={{textAlign:'center',marginTop:10,marginBottom:10}} onPress={this.Payment} ><Text   style={{fontFamily:"IRANSansMobile"}}> پرداخت </Text></Button>
+        {this.state.lastPrice !="0" &&
+          <View>
+          
+              <View style={{marginTop:25}}>
+              <Text   style={{fontFamily:"IRANSansMobile",textAlign:'center',marginTop:10,marginBottom:10}}>
+                  مبلغ قابل پرداخت  
+                  &nbsp;&nbsp;<Text style={{fontFamily:"IRANSansMobile",fontSize:25,color:'red'}}>{this.ConvertNumToFarsi(this.state.lastPrice)}</Text> &nbsp;&nbsp; 
+                  تومان
+              </Text>
+              </View>
+            
+              <View style={{flex:1,flexDirection:'row',justifyContent:'center',marginBottom:25,marginTop:15}}>
+                <Button iconLeft success onPress={this.Payment}>
+                  <Icon name='cart' />
+                  <Text style={{fontFamily:'IRANSansMobile',textAlign:'center'}}>پرداخت</Text>
+                </Button>
+            </View>
+        
         </View>
+          }
+          {this.state.lastPrice =="0" && this.state.CartNumber == 0 &&
+          <View style={{marginTop:100}}>
+     
+          <Text   style={{fontFamily:"IRANSansMobile",textAlign:'center',marginTop:10,marginBottom:10}}>
+                        سبد خرید خالی است
+                        </Text>
+            </View>
+
+        }
          <Grid style={{border:'1px solid red'}}>
 {
         this.state.GridData && this.state.GridData.map((item, index) => (
           
-          <Row style={{height:200,borderWidth: 1,borderColor: '#d6d7da'}}>
+          <Row style={{borderWidth: 1,borderColor: '#d6d7da'}}>
     <Col style={{verticalAlign:'middle',borderRightWidth: 1,borderColor: '#d6d7da',paddingTop:70}}>
-    <TouchableOpacity  onPress={() => this.ChangeCount("0",index,item.products[0]._id)}><Icon name='close' style={{fontSize:50,textAlign:'center'}}  /></TouchableOpacity>
+    <TouchableOpacity  onPress={() => this.ChangeCount("0",index,item.products[0]._id)}><Icon name='close' style={{fontSize:30,textAlign:'center',color:'red'}}  /></TouchableOpacity>
       
     </Col>      
-   <Col style={{borderRightWidth: 1,borderColor: '#d6d7da'}}>
-  <Grid>
+   <Col style={{borderRightWidth: 0.5,borderColor: '#eee'}}>
+  <Grid style={{marginBottom:10,marginTop:20}}>
     <Row>
       <Col>
-          <TouchableOpacity onPress={() => this.ChangeCount(+1,index,item.products[0]._id)} ><Text style={{fontFamily:"IRANSansMobile",fontSize:50,textAlign:'center'}}>+</Text></TouchableOpacity>
+          <TouchableOpacity onPress={() => this.ChangeCount(+1,index,item.products[0]._id)} ><Text style={{fontFamily:"IRANSansMobile",fontSize:30,textAlign:'center'}}>+</Text></TouchableOpacity>
       </Col> 
       </Row>
-      <Row> 
+      <Row style={{marginTop:15}}> 
       <Col>
           <View>
-            <Text style={{fontFamily:"IRANSansMobile",fontSize:50,textAlign:'center'}}>
-              {this.state.ItemCount[index]}
+            <Text style={{fontFamily:"IRANSansMobile",fontSize:30,textAlign:'center',color:'#333'}}>
+              {this.ConvertNumToFarsi(this.state.ItemCount[index])}
             </Text>
           </View>
       </Col>
@@ -201,25 +228,26 @@ class Cart extends React.Component {
   </Grid>
   
   </Col>       
-  <Col style={{width:'60%',borderRightWidth: 1,borderColor: '#d6d7da'}}>
-      <View>
-        <Text style={{fontFamily:"IRANSansMobile",textAlign:"center"}}>
-          {item.products[0].desc}
-        </Text>
-      </View>
-  </Col>
-  
-  <Col>
-  <View>
-        <Text style={{fontFamily:"IRANSansMobile",textAlign:"center"}}>
+  <Col style={{width:'60%'}}>
+      <View style={{padding:15}}>
+        <Text style={{fontFamily:"IRANSansMobile",textAlign:"center",fontSize:20,color:'#333'}}>
           {item.products[0].title}
         </Text>
       </View>
-      <View>
-        <Text style={{fontFamily:"IRANSansMobile",textAlign:"center"}}>
+      {item.products[0].subTitle !="-" &&
+      <View style={{padding:15}}>
+        <Text style={{fontFamily:"IRANSansMobile",textAlign:"center",fontSize:13}}>
           {item.products[0].subTitle}
         </Text>
       </View>
+      }
+      {item.products[0].desc !="-" &&
+      <View style={{padding:15}}>
+        <Text style={{fontFamily:"IRANSansMobile",textAlign:"center",color:'gray',fontSize:11,lineHeight:20}}>
+          {item.products[0].desc}
+        </Text>
+      </View>
+      }
       
   </Col>
 </Row>

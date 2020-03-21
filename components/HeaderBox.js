@@ -102,7 +102,12 @@ class HeaderBox extends React.Component {
      CartNumber:this.props.CartNumber
    })
  }
-
+ ConvertNumToFarsi(text){
+  var id= ['۰','۱','۲','۳','۴','۵','۶','۷','۸','۹'];
+  return text.toString().replace(/[0-9]/g, function(w){
+   return id[+w]
+  });
+}
  
   render() { 
     const {navigate} = this.props.navigation;    
@@ -134,14 +139,14 @@ class HeaderBox extends React.Component {
           <TouchableOpacity onPress={() => { navigate('Cart', {
             onGoBack: () => this.refresh(),
          })}}>
-              <View  ><Text style={{fontFamily:'IRANSansMobile',color:'#1abc9c'}}><Icon type="Ionicons" name="cart" style={{fontSize: 30, color: '#1abc9c'}}/> ({this.state.CartNumber}) </Text></View>
+              <View  ><Text style={{fontFamily:'IRANSansMobile',color:'#1abc9c'}}><Icon type="Ionicons" name="cart" style={{fontSize: 30, color: '#1abc9c'}}/> ({this.ConvertNumToFarsi(this.state.CartNumber)}) </Text></View>
             </TouchableOpacity>
          
          }
          </Col>  
           <Col >
          {this.state.username &&
-   <TouchableOpacity onPress={() => {  navigate('Login')}} style={{flex:1,flexDirection:'row',justifyContent:'space-between',backgroundColor:'#333',padding:5,borderRadius:5,margin:5}}   >
+   <TouchableOpacity onPress={() => {  navigate('User')}} style={{flex:1,flexDirection:'row',justifyContent:'space-between',backgroundColor:'#333',padding:5,borderRadius:5,margin:5}}   >
   
   <View >
   <Text style={{fontFamily:'IRANSansMobile',paddingTop:4,color:'#fff',paddingLeft:5}}> محیط کاربری</Text>  
@@ -200,7 +205,7 @@ class HeaderBox extends React.Component {
           <TouchableOpacity onPress={() => { navigate('Cart', {
               onGoBack: () => this.refresh(),
           })}}>
-              <View  ><Text style={{fontFamily:'IRANSansMobile'}}><Icon type="Ionicons" name="cart" style={{fontSize: 30, color: 'red'}}/> ({this.state.CartNumber}) </Text></View>
+              <View  ><Text style={{fontFamily:'IRANSansMobile',color:'#1abc9c'}}><Icon type="Ionicons" name="cart" style={{fontSize: 30, color: '#1abc9c'}} /> ({this.ConvertNumToFarsi(this.state.CartNumber)}) </Text></View>
             </TouchableOpacity>
           }
     </Right>  

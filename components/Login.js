@@ -78,30 +78,39 @@ class Login extends React.Component {
         
         <Content>
         <ScrollView>
-          <Text style={{textAlign:'center',marginTop:10}}>ورود به محیط کاربری</Text>
-          <Form>
+          <Text style={{textAlign:'center',marginTop:25,fontFamily:'IRANSansMobile',fontSize:25,color:'#333'}}>ورود به محیط کاربری</Text>
+          <Form style={{marginTop:35}}>
             <Item inlineLabel>
               <Input value={this.state.username} keyboardType="number-pad" name="username"                        onChangeText={(text) => this.setState({username:text})  }  />
-              <Label>نام کاربری</Label>
+              <Label style={{fontFamily:'IRANSansMobile'}}>نام کاربری</Label>
 
             </Item>
             <Item inlineLabel >
                <Input value={this.state.password} secureTextEntry={true} keyboardType="number-pad" name="password"   onChangeText={(text) => this.setState({password:text})  }  />
-               <Label>رمز عبور</Label>
+               <Label style={{fontFamily:'IRANSansMobile'}}>رمز عبور</Label>
             </Item>
-              
-              <Button iconLeft info style={{marginTop:20}} onPress ={this.Login}>
-            <Icon name='arrow-back' />
-            <Text>ورود</Text>
-          </Button>
-           <Button iconLeft primary style={{marginTop:20}} onPress={() => navigate('Register')}>
-            <Icon name='arrow-back' />
-            <Text>ثبت نام</Text>
-          </Button>
-          <Button iconLeft primary style={{marginTop:20}} onPress={() => navigate('Register',{type:'changePass'})           }>
-            <Icon name='arrow-back' />
-            <Text>بازیابی رمز عبور</Text>
-          </Button>
+            <View style={{flex:1,flexDirection:'row',justifyContent:'center',marginBottom:25,marginTop:45}}>
+                <Button iconLeft success onPress={this.Login}>
+                      <Icon name='arrow-back' />
+                      <Text style={{fontFamily:'IRANSansMobile',textAlign:'center'}}>ورود</Text>
+                    </Button>
+            </View>  
+            <View style={{flex:1,flexDirection:'row',marginTop:60,justifyContent:'flex-start'}}>
+            <View style={{flex:1,flexDirection:'row',justifyContent:'center',marginBottom:25,marginTop:15}}>
+                <Button iconLeft dark onPress={() => navigate('Register')}>
+                      <Icon name='arrow-back' />
+                      <Text style={{fontFamily:'IRANSansMobile',textAlign:'center'}}>ثبت نام</Text>
+                    </Button>
+            </View> 
+            <View style={{flex:1,flexDirection:'row',justifyContent:'center',marginBottom:25,marginTop:15}}>
+                <Button iconLeft dark onPress={() => navigate('Register',{type:'changePass'})}>
+                      <Icon name='arrow-back' />
+                      <Text style={{fontFamily:'IRANSansMobile',textAlign:'center'}}>بازیابی رمز عبور</Text>
+                    </Button>
+            </View> 
+              </View> 
+           
+           
           </Form>
 
          </ScrollView> 

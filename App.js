@@ -14,7 +14,8 @@ import { connect } from "react-redux"
 import {createStackNavigator} from 'react-navigation-stack';
 import * as Font from 'expo-font';
 import {View,Text} from 'react-native'             
-       
+import { Root } from "native-base";
+     
 import {                          
   createAppContainer
 } from 'react-navigation';       
@@ -122,8 +123,11 @@ export default class App extends React.Component {
   render() {
     if(this.state.fontLoaded){
     return (    
+      
       <Provider store={store}>
+        <Root>
           <Navigator color={1}/>
+          </Root>
         </Provider>  
       );
       
