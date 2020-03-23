@@ -1,10 +1,10 @@
 import React, { Component } from 'react';
-import { StyleSheet ,ScrollView,ListView,SafeAreaView,FlatList } from 'react-native'; 
+import { TouchableOpacity} from 'react-native'; 
 import { connect } from "react-redux"
 import Server from './Server.js'
 import { Image } from 'react-native';
 import moment from 'moment-jalaali'; 
-import { Container,Content, Header,Form,Item, View,Button, DeckSwiper, Card, CardItem, Thumbnail, Text, Left,Right, Body, Icon,Label,Input,Toast,Segment } from 'native-base';
+import { Container,Content, Header,Form,Item, View,Button, DeckSwiper, Card, CheckBox, ListItem, Text, Left,Right, Body, Icon,Label,Input,Toast,Segment,Radio } from 'native-base';
 import { Col, Row, Grid } from 'react-native-easy-grid';
 import {AsyncStorage} from 'react-native';
 import HeaderBox from './HeaderBox.js'
@@ -19,10 +19,20 @@ class User extends React.Component {
       name : null,
       address: null,
       status: null,
-      selected:1,
+      selected:2,
       api_token:null,
       GridDataPayment:[],
-      GridDataFactors:[]
+      GridDataFactors:[],
+      paymentNotOk:false,
+      paymentOk:false,
+      Stat1:false,
+      Stat2:false,
+      Stat3:true,
+      Stat4:true,
+      Stat5:true,            
+      Stat6:true,
+      Stat7:false
+
     }
     this.Server = new Server();
     this.updateUserInformation = this.updateUserInformation.bind(this);
@@ -33,6 +43,12 @@ class User extends React.Component {
    
 
   }  
+  ConvertNumToFarsi(text){
+    var id= ['۰','۱','۲','۳','۴','۵','۶','۷','۸','۹'];
+    return text.toString().replace(/[0-9]/g, function(w){
+     return id[+w]
+    });
+  }
   componentDidMount() {
       let that = this;
       AsyncStorage.getItem('api_token').then((value) => {   
@@ -104,9 +120,26 @@ class User extends React.Component {
  
   GetFactors(){   
     let that = this;
-    let param={
-      user_id:this.state.UserId
-    };
+    var Stat = [];
+    if(this.state.Stat1)
+      Stat.push("-2");
+    if(this.state.Stat2)
+      Stat.push("-1");
+    if(this.state.Stat3)
+      Stat.push("0");
+    if(this.state.Stat4)
+      Stat.push("1");
+    if(this.state.Stat5)
+      Stat.push("2");
+    if(this.state.Stat6)
+      Stat.push("3"); 
+    if(this.state.Stat7)
+      Stat.push("4");    
+    let param={            
+      user_id:this.state.UserId,
+      Stat:Stat
+    };    
+
     let SCallBack = function(response){
 
       response.data.result.map(function(v,i){
@@ -129,19 +162,24 @@ class User extends React.Component {
       that.setState({
         GridDataFactors : response.data.result
       })
-      that.GetPayment();
+      that.GetPayment(1);
     };
-    let ECallBack = function(error){
+    let ECallBack = function(error){    
       console.log(error)
     }
     this.Server.send("https://marketapi.sarvapps.ir/MainApi/getFactors",param,SCallBack,ECallBack)
   }
-  GetPayment(){
+  GetPayment(p){
     let that = this;
     let param={
-      user_id:this.state.UserId
+      user_id:this.state.UserId,
+      OkPayment:p==1 ? 1 : 0      
     };
-    let SCallBack = function(response){
+      this.setState({   
+        paymentOk:p==1 ? true : false,
+        paymentNotOk:p==2 ? true : false
+      })
+    let SCallBack = function(response){   
       response.data.result.map(function(v,i){
         v.radif=i+1;
       })
@@ -224,11 +262,297 @@ class User extends React.Component {
 
           }
           { this.state.selected==2 &&
-        <Text>Segment2</Text>
+          <View>
+          <View>
+          <Grid>
+          <Row style={{marginBottom:5}} onPress={() =>{
+                this.setState({
+                  Stat1:!this.state.Stat1
+                })
+              }} >
+         
+              <Col>
+              <Text style={{fontFamily:'IRANSansMobile',textAlign:'right',color:'gray',fontSize:12}}>درخواست لغو شده توسط من</Text>
+              </Col>
+              <Col style={{width:40}}>
+              <CheckBox checked={this.state.Stat1} 
+                  onPress={() =>{
+                    this.setState({
+                      Stat1:!this.state.Stat1
+                    })
+                  }}
+              />
+              </Col>
+            
+              
+            </Row>
+            <Row style={{marginBottom:5}} onPress={() =>{
+                this.setState({
+                  Stat2:!this.state.Stat2
+                })
+              }}>
+              
+              
+              <Col>
+              <Text style={{fontFamily:'IRANSansMobile',textAlign:'right',color:'gray',fontSize:12}}>لغو شده</Text>
+              </Col>
+              <Col style={{width:40}} >
+              <CheckBox checked={this.state.Stat2} onPress={() =>{
+                this.setState({
+                  Stat2:!this.state.Stat2
+                })
+              }}  
+              />
+              </Col>
+              
+            </Row>
+           
+            <Row style={{marginBottom:5}} onPress={() =>{
+                this.setState({
+                  Stat3:!this.state.Stat3
+                })
+              }}>
+              <Col>
+              <Text style={{fontFamily:'IRANSansMobile',textAlign:'right',color:'gray',fontSize:12}}>پرداخت نشده</Text>
+              </Col>
+              <Col style={{width:40}}>
+              <CheckBox checked={this.state.Stat3} onPress={() =>{
+                this.setState({
+                  Stat3:!this.state.Stat3
+                })
+              }} 
+              />
+              </Col>
+              
+              
+            </Row>
+            <Row style={{marginBottom:5}} onPress={() =>{
+                this.setState({
+                  Stat4:!this.state.Stat4
+                })
+              }} >
+              
+              
+              <Col>
+              <Text style={{fontFamily:'IRANSansMobile',textAlign:'right',color:'gray',fontSize:12}}>پرداخت شده</Text>
+              </Col>
+              <Col style={{width:40}}>
+              <CheckBox checked={this.state.Stat4} onPress={() =>{
+                this.setState({
+                  Stat4:!this.state.Stat4
+                })
+              }} 
+              />
+              </Col>
+              
+            </Row>
+            <Row style={{marginBottom:5}} onPress={() =>{
+                this.setState({
+                  Stat5:!this.state.Stat5
+                })
+              }} >
+              <Col>
+              <Text style={{fontFamily:'IRANSansMobile',textAlign:'right',color:'gray',fontSize:12}}>آماده ارسال</Text>
+              </Col>
+              <Col style={{width:40}}>
+              <CheckBox checked={this.state.Stat5}  onPress={() =>{
+                this.setState({
+                  Stat5:!this.state.Stat5
+                })
+              }}
+              />
+              </Col>
+              
+              
+            </Row>
+            <Row style={{marginBottom:5}} onPress={() =>{
+                this.setState({
+                  Stat6:!this.state.Stat6
+                })
+              }} >
+             
+              <Col>
+              <Text style={{fontFamily:'IRANSansMobile',textAlign:'right',color:'gray',fontSize:12}}>ارسال شده</Text>
+              </Col>
+              <Col style={{width:40}}>
+              <CheckBox checked={this.state.Stat6} onPress={() =>{
+                this.setState({
+                  Stat6:!this.state.Stat6
+                })
+              }} 
+              />
+              </Col>
+              
+            </Row>
+            <Row style={{marginBottom:5}} onPress={() =>{
+                this.setState({
+                  Stat7:!this.state.Stat7
+                })
+              }} >
+              <Col>
+              <Text style={{fontFamily:'IRANSansMobile',textAlign:'right',color:'gray',fontSize:12}}>پایان یافته</Text>
+              </Col>
+              <Col style={{width:40}}>
+              <CheckBox checked={this.state.Stat7}  onPress={() =>{
+                this.setState({
+                  Stat7:!this.state.Stat7
+                })
+              }}
+              />
+              </Col>
+              
+              
+            </Row>
+            <Row style={{marginBottom:5}}  >
+              <Col>
+                  <View style={{flex:1,flexDirection:'row',justifyContent:'center'}}>
+                    <Button iconLeft light onPress={this.GetFactors}>
+                          <Text style={{fontFamily:'IRANSansMobile',textAlign:'center'}}>به روز رسانی اطلاعات</Text>
+                        </Button>
+                  </View>  
+                
+            </Col>
+             
+              
+              
+            </Row>
+            </Grid>
+         
+            
+          </View>
+          <Grid style={{marginTop:15}}>
+             <Row style={{backgroundColor:'#333',padding:15}}>
+                  <Col>
+                  <Text style={{fontFamily:'IRANSansMobile',textAlign:'center',color:'#fff',fontSize:12}}>
+                      جزئیات
+                  </Text>
+                  </Col>
+                  <Col>
+                  <Text style={{fontFamily:'IRANSansMobile',textAlign:'center',color:'#fff',fontSize:12}}>
+                      وضعیت
+                  </Text>
+                  </Col>
+                  <Col>
+                  <Text style={{fontFamily:'IRANSansMobile',textAlign:'center',color:'#fff',fontSize:12}}>
+                      مبلغ
+                  </Text>
+                  </Col>
+            </Row>
+            {this.state.GridDataFactors.map((v, i) => { 
+             return ( 
+                <Row style={(i % 2) ? {backgroundColor:'#eee',padding:15} : {backgroundColor:'#ccc',padding:15}}>
+                  <Col>
+                  <TouchableOpacity onPress={this.openDrawer}  >
+
+                  <Icon name="grid" style={{fontFamily:'IRANSansMobile',textAlign:'center',color:'gray'}}  />
+                           
+                  </TouchableOpacity>
+                  </Col>
+                 
+                 
+                  <Col>
+                  <Text style={{fontFamily:'IRANSansMobile',textAlign:'center'}}>
+                      {v.statusDesc}
+                  </Text>  
+                      
+                  </Col>
+
+                  <Col>
+                  <Text style={{fontFamily:'IRANSansMobile',textAlign:'center'}}>
+                      {this.ConvertNumToFarsi(v.Amount)} تومان
+                  </Text>       
+                  </Col>
+                  
+                  </Row>
+             )
+            })
+          }
+          </Grid>
+          </View>   
 
           }
           { this.state.selected==3 &&
-        <Text>Segment3</Text>
+            <View>
+
+            <View>
+              
+              <ListItem selected={this.state.paymentOk} onPress={() => this.GetPayment(1)}>
+                <Left >
+                  <Text style={{fontFamily:'IRANSansMobile',textAlign:'right',color:'gray',fontSize:12}}>تراکنش های موفق</Text>
+                </Left>
+                <Body>
+                  <Radio
+                    color={"#f0ad4e"}
+                    selectedColor={"#5cb85c"}
+                    selected={this.state.paymentOk}
+                  />
+                </Body>
+              </ListItem>
+              <ListItem selected={this.state.paymentNotOk} onPress={() => this.GetPayment(2)}>
+                <Left>
+                  <Text style={{fontFamily:'IRANSansMobile',textAlign:'right',color:'gray',fontSize:12}}>20 تراکنش اخیر ناموفق</Text>
+                </Left>
+                <Body>
+                  <Radio
+                    color={"#f0ad4e"}
+                    selectedColor={"#5cb85c"}
+                    selected={this.state.paymentNotOk}
+                  />
+                </Body>
+              </ListItem>
+            
+          </View>
+              <Grid>
+              <Row style={{backgroundColor:'#333',padding:15}}>
+                   <Col>
+                   <Text style={{fontFamily:'IRANSansMobile',textAlign:'center',color:'#fff',fontSize:12}}>
+                       رسید تراکنش
+                   </Text>
+                   </Col>
+                   <Col>
+                   <Text style={{fontFamily:'IRANSansMobile',textAlign:'center',color:'#fff',fontSize:12}}>
+                       تاریخ
+                   </Text>
+                   </Col>
+                   <Col>
+                   <Text style={{fontFamily:'IRANSansMobile',textAlign:'center',color:'#fff',fontSize:12}}>
+                       مبلغ
+                   </Text>
+                   </Col>
+             </Row>
+             {this.state.GridDataPayment.map((v, i) => { 
+              return ( 
+                 <Row style={(i % 2) ? {backgroundColor:'#eee',padding:15} : {backgroundColor:'#ccc',padding:15}}>
+                   <Col>
+                   <Text style={{fontFamily:'IRANSansMobile',textAlign:'center',fontSize:12}}>
+                       {v.refId}
+                   </Text>
+                   </Col>
+                  
+                  
+                   <Col>
+                   <Text style={{fontFamily:'IRANSansMobile',textAlign:'center',fontSize:12}}>
+                       {v.date.split(",")[0]}
+                   </Text>  
+                   <Text style={{fontFamily:'IRANSansMobile',textAlign:'center',fontSize:12}}>
+                       {v.date.split(",")[1]}
+                   </Text> 
+                       
+                   </Col>
+ 
+                   <Col>
+                   <Text style={{fontFamily:'IRANSansMobile',textAlign:'center'}}>
+                       {this.ConvertNumToFarsi(v.amount)} تومان
+                   </Text>       
+                   </Col>
+                   
+                   </Row>
+              )
+             })
+           }
+           </Grid>
+           </View>
+
 
           }
       </Content>

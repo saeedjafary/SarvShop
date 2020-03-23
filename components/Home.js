@@ -81,6 +81,8 @@ openDrawer(){
 
 }
 ConvertNumToFarsi(text){
+  if(!text)
+    return text;
   var id= ['۰','۱','۲','۳','۴','۵','۶','۷','۸','۹'];
   return text.toString().replace(/[0-9]/g, function(w){
    return id[+w]
@@ -286,7 +288,7 @@ let that = this;
         ref={(ref) => { this.drawer = ref; }}
         content={<SideBar navigator={this.navigator} navigation={this.props.navigation} />}
         onClose={() => this.closeDrawer()} >
-         <HeaderBox navigation={this.props.navigation} />
+         <HeaderBox navigation={this.props.navigation}  />
    
          
         <Content style={{marginTop:5}}>
@@ -408,7 +410,7 @@ let that = this;
           <Row style={{height:200}}>    
             <Col onPress={() => navigate('Products', {id: this.state.Products4[0]._id})} style={{margin:2}}>
               <View> 
-                <Image style={{ height: '100%',opacity:'0.8'}} source={{uri:'https://marketapi.sarvapps.ir/' + this.state.Products4[0].fileUploaded.split("public")[1]}} />
+                <Image style={{ height: '100%'}} source={{uri:'https://marketapi.sarvapps.ir/' + this.state.Products4[0].fileUploaded.split("public")[1]}} />
                <View style={{position:'absolute',bottom:50,right:0,backgroundColor:'rgba(0,0,0,0.5)',padding:5,width:'100%'}}>  
                <Text style={{textAlign:'right',color:'#fff',fontFamily:'IRANSansMobile'}} >
               {this.state.Products4[0].title}
@@ -422,7 +424,7 @@ let that = this;
             </Col>
             <Col onPress={() => navigate('Products', {id: this.state.Products4[1]._id})} style={{margin:2}}>
               <View>
-                <Image style={{ height: '100%',opacity:'0.8'}} source={{uri:'https://marketapi.sarvapps.ir/' + this.state.Products4[1].fileUploaded.split("public")[1]}} />
+                <Image style={{ height: '100%'}} source={{uri:'https://marketapi.sarvapps.ir/' + this.state.Products4[1].fileUploaded.split("public")[1]}} />
                <View style={{position:'absolute',bottom:50,right:0,backgroundColor:'rgba(0,0,0,0.5)',padding:5,width:'100%'}}>  
                <Text style={{textAlign:'right',color:'#fff',fontFamily:'IRANSansMobile'}} >
               {this.state.Products4[1].title}
@@ -440,7 +442,7 @@ let that = this;
           <Row style={{height:200}}>
             <Col onPress={() => navigate('Products', {id: this.state.Products4[2]._id})} style={{margin:2}}>
                <View>
-                <Image style={{ height: '100%',opacity:'0.8'}} source={{uri:'https://marketapi.sarvapps.ir/' + this.state.Products4[2].fileUploaded.split("public")[1]}} />
+                <Image style={{ height: '100%'}} source={{uri:'https://marketapi.sarvapps.ir/' + this.state.Products4[2].fileUploaded.split("public")[1]}} />
                <View style={{position:'absolute',bottom:50,right:0,backgroundColor:'rgba(0,0,0,0.5)',padding:5,width:'100%'}}>  
                <Text style={{textAlign:'right',color:'#fff',fontFamily:'IRANSansMobile'}} >
               {this.state.Products4[2].title}
@@ -454,7 +456,7 @@ let that = this;
             </Col>
             <Col onPress={() => navigate('Products', {id: this.state.Products4[3]._id})} style={{margin:2}}>
                <View>
-                <Image style={{ height: '100%',opacity:'0.8'}} source={{uri:'https://marketapi.sarvapps.ir/' + this.state.Products4[3].fileUploaded.split("public")[1]}} />
+                <Image style={{ height: '100%'}} source={{uri:'https://marketapi.sarvapps.ir/' + this.state.Products4[3].fileUploaded.split("public")[1]}} />
                <View style={{position:'absolute',bottom:50,right:0,backgroundColor:'rgba(0,0,0,0.5)',padding:5,width:'100%'}}>  
                <Text style={{textAlign:'right',color:'#fff',fontFamily:'IRANSansMobile'}} >
               {this.state.Products4[3].title}
@@ -523,7 +525,7 @@ let that = this;
                   <Text style={{textAlign:'right',fontFamily:'IRANSansMobile',color:'gray'}}> 
                     بیشتر...
                   </Text>
-                </TouchableOpacity>
+                </TouchableOpacity> 
              </View>
              <View style={{flexGrow: 9}}><Text style={{textAlign:'right',fontFamily:'IRANSansMobile'}}>
                 {this.state.CatData2.name}

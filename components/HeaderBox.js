@@ -15,7 +15,7 @@ let cards = [];
 function Item({ title }) {      
   return (
     <View style={{margin:5}}>
-      <Button ><Text>{title}</Text></Button>
+      <Button ><Text >{title}</Text></Button>
     </View>
   );
 }     
@@ -104,6 +104,8 @@ class HeaderBox extends React.Component {
  }
  ConvertNumToFarsi(text){
   var id= ['۰','۱','۲','۳','۴','۵','۶','۷','۸','۹'];
+  if(!text)
+    return text;
   return text.toString().replace(/[0-9]/g, function(w){
    return id[+w]
   });
@@ -120,7 +122,7 @@ class HeaderBox extends React.Component {
           <Left >
             <Button transparent onPress={() => {try         {this.props.navigation.state.params.onGoBack()}catch(e){}
  ; this.props.navigation.goBack()}}>
-              <Icon name='arrow-back' />
+              <Icon name='arrow-back' style={{color:'#333'}} />
             </Button>
           </Left>
       }
@@ -139,34 +141,34 @@ class HeaderBox extends React.Component {
           <TouchableOpacity onPress={() => { navigate('Cart', {
             onGoBack: () => this.refresh(),
          })}}>
-              <View  ><Text style={{fontFamily:'IRANSansMobile',color:'#1abc9c'}}><Icon type="Ionicons" name="cart" style={{fontSize: 30, color: '#1abc9c'}}/> ({this.ConvertNumToFarsi(this.state.CartNumber)}) </Text></View>
+              <View  ><Text style={{fontFamily:'IRANSansMobile',color:'#1abc9c',marginTop:7}}><Icon type="Ionicons" name="cart" style={{fontSize: 30, color: '#1abc9c'}}/> ({this.ConvertNumToFarsi(this.state.CartNumber)}) </Text></View>
             </TouchableOpacity>
          
          }
          </Col>  
           <Col >
          {this.state.username &&
-   <TouchableOpacity onPress={() => {  navigate('User')}} style={{flex:1,flexDirection:'row',justifyContent:'space-between',backgroundColor:'#333',padding:5,borderRadius:5,margin:5}}   >
+   <TouchableOpacity onPress={() => {  navigate('User')}} style={{padding:0,flex:1,flexDirection:'row',justifyContent:'space-between',backgroundColor:'#333',padding:5,borderRadius:5,margin:8}}   >
   
   <View >
-  <Text style={{fontFamily:'IRANSansMobile',paddingTop:4,color:'#fff',paddingLeft:5}}> محیط کاربری</Text>  
+  <Text style={{fontFamily:'IRANSansMobile',paddingTop:4,color:'#fff',paddingLeft:5,fontSize:13}}> محیط کاربری</Text>  
 
   </View>
   <View  >
-     <Icon name='settings' style={{paddingTop:-5,color:'#ccc'}} />          
+     <Icon name='settings' style={{paddingTop:6,color:'#ccc',fontSize:20}} />          
   </View>
  </TouchableOpacity> 
 
           }
          
          </Col>
-     <Col style={{width:120}}>      
+     <Col style={{width:120}}>         
 {!this.state.username &&   
      
  <TouchableOpacity onPress={() => {  navigate('Login')}} style={{flex:1,flexDirection:'row',backgroundColor:'rgb(0, 179, 134)',padding:5,borderRadius:5,margin:5,justifyContent:'space-between'}}   >
   
   <View >
-  <Text style={{fontFamily:'IRANSansMobile',paddingTop:4,paddingLeft:5,color:'#fff'}}> ورود / ثبت نام </Text>     
+  <Text style={{fontFamily:'IRANSansMobile',paddingTop:4,paddingLeft:5,color:'#fff',fontSize:13}}> ورود / ثبت نام </Text>     
 
   </View>
   
@@ -174,14 +176,14 @@ class HeaderBox extends React.Component {
 
 
 }{this.state.username &&
-<TouchableOpacity onPress={this.logout} style={{flex:1,flexDirection:'row',backgroundColor:'red',padding:5,borderRadius:5,margin:5}}   >
+<TouchableOpacity onPress={this.logout} style={{flex:1,flexDirection:'row',justifyContent:'space-between',backgroundColor:'red',padding:5,borderRadius:5,margin:8}}   >
   
    <View style={{flexBasis:60}}>
-   <Text style={{fontFamily:'IRANSansMobile',paddingTop:4,color:'#fff',paddingLeft:5}}> خروج</Text>
+   <Text style={{fontFamily:'IRANSansMobile',paddingTop:4,color:'#fff',paddingLeft:5,fontSize:13}}> خروج</Text>
 
    </View>
    <View>
-      <Icon name='exit' style={{paddingTop:0,color:'#ccc'}} />
+      <Icon name='exit' style={{paddingTop:7,color:'#ccc',fontSize:20}}  />
    </View>
   </TouchableOpacity>   
 
@@ -193,7 +195,7 @@ class HeaderBox extends React.Component {
         
   }
   {this.props.goBack &&             
-  <View style={{flex: 1,justifyContent: 'center',alignItems: 'center'}}><Text style={{fontFamily:'IRANSansMobile'}}>{this.props.title}</Text></View>
+  <View style={{width:'100%'}}><Text style={{fontFamily:'IRANSansMobile',texAlign:'right'}}>{this.props.title}</Text></View>
    }   
       </Body>
 

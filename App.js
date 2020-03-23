@@ -15,7 +15,8 @@ import {createStackNavigator} from 'react-navigation-stack';
 import * as Font from 'expo-font';
 import {View,Text} from 'react-native'             
 import { Root } from "native-base";
-     
+import { StatusBar } from 'react-native';
+    
 import {                          
   createAppContainer
 } from 'react-navigation';       
@@ -111,14 +112,17 @@ export default class App extends React.Component {
   }    
   async componentDidMount() {
   await Font.loadAsync({
+    'Roboto': require('native-base/Fonts/Roboto.ttf'),
+    'Roboto_medium': require('native-base/Fonts/Roboto_medium.ttf'),
     'IRANSansMobile': require('./assets/fonts/IRANSansMobile.ttf'),
   });
   this.setState({ fontLoaded: true });
 
 }
-    
-  async componentWillMount() { 
-  
+
+ componentWillMount() { 
+    StatusBar.setHidden(false);
+
   }
   render() {
     if(this.state.fontLoaded){
