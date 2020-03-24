@@ -51,7 +51,7 @@ getCategory(){
         inverted={true}
         renderItem={({ item }) => (
           <View style={{margin:5,padding:5,flex: 1, flexDirection: 'row-reverse', justifyContent: 'space-between',width:'100%',backgroundColor:'#eee'}}>
-          <TouchableOpacity onPress={() => navigate('Cat', {id: item._id})} ><Text style={{fontFamily:'IRANSansMobile',paddingRight:5}}>{item.name}</Text></TouchableOpacity>
+          <TouchableOpacity onPress={() => navigate('Cat', {id: item._id,name:item.name})} ><Text style={{fontFamily:'IRANSansMobile',paddingRight:5}}>{item.name}</Text></TouchableOpacity>
             
           </View>
         

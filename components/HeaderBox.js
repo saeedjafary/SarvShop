@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { StyleSheet ,ScrollView,SafeAreaView,FlatList,TouchableOpacity } from 'react-native'; 
+import { StyleSheet ,ScrollView,SafeAreaView,Platform,TouchableOpacity } from 'react-native'; 
 import { connect } from "react-redux"
 import Server from './Server.js'
 import { Image } from 'react-native';
@@ -84,7 +84,6 @@ class HeaderBox extends React.Component {
 
     if( this.props.navigation.state.params  && this.props.navigation.state.params.p=="LoginTrue")
      {
-      alert(1)
       this.findUser(); 
      } 
   }
@@ -148,14 +147,14 @@ class HeaderBox extends React.Component {
          </Col>  
           <Col >
          {this.state.username &&
-   <TouchableOpacity onPress={() => {  navigate('User')}} style={{padding:0,flex:1,flexDirection:'row',justifyContent:'space-between',backgroundColor:'#333',padding:5,borderRadius:5,margin:8}}   >
+   <TouchableOpacity onPress={() => {  navigate('User')}} style={Platform.OS==='android' ? {padding:0,flex:1,flexDirection:'row',justifyContent:'space-between',backgroundColor:'#333',padding:5,borderRadius:5,margin:8} : {padding:0,flex:1,flexDirection:'row',justifyContent:'space-between',backgroundColor:'#333',padding:5,borderRadius:5,margin:5}}   >
   
   <View >
   <Text style={{fontFamily:'IRANSansMobile',paddingTop:4,color:'#fff',paddingLeft:5,fontSize:13}}> محیط کاربری</Text>  
 
   </View>
   <View  >
-     <Icon name='settings' style={{paddingTop:6,color:'#ccc',fontSize:20}} />          
+     <Icon name='settings' style={Platform.OS==='android' ? {paddingTop:6,color:'#ccc',fontSize:20} : {color:'#ccc'}} />          
   </View>
  </TouchableOpacity> 
 
@@ -165,7 +164,7 @@ class HeaderBox extends React.Component {
      <Col style={{width:120}}>         
 {!this.state.username &&   
      
- <TouchableOpacity onPress={() => {  navigate('Login')}} style={{flex:1,flexDirection:'row',backgroundColor:'rgb(0, 179, 134)',padding:5,borderRadius:5,margin:5,justifyContent:'space-between'}}   >
+ <TouchableOpacity onPress={() => {  navigate('Login')}} style={Platform.OS==='android' ? {flex:1,flexDirection:'row',backgroundColor:'rgb(0, 179, 134)',padding:5,borderRadius:5,margin:10,justifyContent:'space-between'} : {flex:1,flexDirection:'row',backgroundColor:'rgb(0, 179, 134)',padding:5,borderRadius:5,margin:5,justifyContent:'space-between'}}   >
   
   <View >
   <Text style={{fontFamily:'IRANSansMobile',paddingTop:4,paddingLeft:5,color:'#fff',fontSize:13}}> ورود / ثبت نام </Text>     
@@ -176,14 +175,14 @@ class HeaderBox extends React.Component {
 
 
 }{this.state.username &&
-<TouchableOpacity onPress={this.logout} style={{flex:1,flexDirection:'row',justifyContent:'space-between',backgroundColor:'red',padding:5,borderRadius:5,margin:8}}   >
+<TouchableOpacity onPress={this.logout} style={Platform.OS==='android' ? {flex:1,flexDirection:'row',justifyContent:'space-between',backgroundColor:'red',padding:5,borderRadius:5,margin:8} : {flex:1,flexDirection:'row',justifyContent:'space-between',backgroundColor:'red',padding:5,borderRadius:5,margin:5}}   >
   
    <View style={{flexBasis:60}}>
    <Text style={{fontFamily:'IRANSansMobile',paddingTop:4,color:'#fff',paddingLeft:5,fontSize:13}}> خروج</Text>
 
    </View>
    <View>
-      <Icon name='exit' style={{paddingTop:7,color:'#ccc',fontSize:20}}  />
+      <Icon name='exit' style={Platform.OS==='android' ? {paddingTop:7,color:'#ccc',fontSize:20} : {color:'#ccc'}}  />
    </View>
   </TouchableOpacity>   
 

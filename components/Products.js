@@ -4,7 +4,7 @@ import { connect } from "react-redux"
 import Server from './Server.js'
 import { Image } from 'react-native';
 import moment from 'moment-jalaali'; 
-import { Container,Content, Header, View,Button, DeckSwiper, Card, CardItem, Thumbnail, Text, Left,Right, Body, Icon,Title,Input } from 'native-base';
+import { Container,Content, Header, View,Button, DeckSwiper, Card, CardItem, Toast, Text, Left,Right, Body, Icon,Title,Input } from 'native-base';
 import { Col, Row, Grid } from 'react-native-easy-grid';
 import {AsyncStorage} from 'react-native';
 import HeaderBox from './HeaderBox.js'
@@ -94,7 +94,11 @@ class Products extends React.Component {
    that.Server.send("https://marketapi.sarvapps.ir/MainApi/ManageCart",param,SCallBack,ECallBack) 
 
     },function(error){
-        alert("ابتدا وارد سایت شوید")
+        Toast.show({
+          text: "جهت اضافه کردن محصول در سبد خرید در سامانه وارد شوید",
+          textStyle: { fontFamily:'IRANSansMobile',textAlign:'right',fontSize:14 },
+          type: "light"
+        })
     }) 
         
 

@@ -15,8 +15,8 @@ import {createStackNavigator} from 'react-navigation-stack';
 import * as Font from 'expo-font';
 import {View,Text} from 'react-native'             
 import { Root } from "native-base";
-import { StatusBar } from 'react-native';
-    
+import {Platform, StyleSheet} from 'react-native';
+
 import {                          
   createAppContainer
 } from 'react-navigation';       
@@ -106,7 +106,7 @@ export default class App extends React.Component {
     super(props);
     this.state = {           
       loading: true,
-      fontLoaded:false
+      fontLoaded:true
 
     }
   }    
@@ -121,7 +121,6 @@ export default class App extends React.Component {
 }
 
  componentWillMount() { 
-    StatusBar.setHidden(false);
 
   }
   render() {
@@ -130,6 +129,9 @@ export default class App extends React.Component {
       
       <Provider store={store}>
         <Root>
+          <View style={Platform.OS==='android' ?{paddingTop:24} : {}}>
+
+          </View>
           <Navigator color={1}/>
           </Root>
         </Provider>  

@@ -144,8 +144,8 @@ ConvertNumToFarsi(text){
               that.getOffData(); 
           
     } 
-    let ECallBack = function(error){  
-     alert(error)   
+    let ECallBack = function(error){     
+     alert(error + "1")     
     }  
         
    this.Server.send("https://marketapi.sarvapps.ir/MainApi/getProducts",{type:1,limit:0},SCallBack,ECallBack) 
@@ -184,7 +184,7 @@ let that = this;
         }   
     } 
     let ECallBack = function(error){      
-     alert(error)                       
+     alert(error + "2")                       
     } 
   if(limit==4)                              
      type="bestselling"       
@@ -203,7 +203,7 @@ let that = this;
         
   } 
   let ECallBack = function(error){
-   alert(error)   
+   alert(error + "3")   
   } 
   this.Server.send("https://marketapi.sarvapps.ir/MainApi/getProducts",{type:"bestOff"},SCallBack,ECallBack)
  }
@@ -271,7 +271,7 @@ let that = this;
           that.getProducts(1000,"bestselling");
     
       } ,function(error){
-          alert(error)   
+          alert(error + "4")   
       })
 }
   render() { 
@@ -326,7 +326,7 @@ let that = this;
           placeholder="بخشی از عنوان محصول را وارد کنید"
           renderItem={(p) => (
             <TouchableOpacity onPress={() => navigate('Products', {id: p.item._id})} style={{paddingBottom:10}}  >
-              <View><Text style={{textAlign:'right'}}> 
+              <View><Text style={{textAlign:'right',fontFamily:'IRANSansMobile'}}> 
                 { p.item.title}
               </Text>
               

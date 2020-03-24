@@ -4,7 +4,7 @@ import { connect } from "react-redux"
 import Server from './Server.js'
 import { Image } from 'react-native';
 import moment from 'moment-jalaali'; 
-import { Container,Content, Header,Form,Item, View,Button, DeckSwiper, Card, CardItem, Thumbnail, Text, Left,Right, Body, Label,Input,Title,Icon } from 'native-base';
+import { Container,Content, Header,Form,Item, View,Button, DeckSwiper, Card, CardItem, Toast, Text, Left,Right, Body, Label,Input,Title,Icon } from 'native-base';
 
 import { Col, Row, Grid } from 'react-native-easy-grid';
 import {AsyncStorage} from 'react-native';
@@ -22,7 +22,7 @@ class Register extends React.Component {
         SecurityCode : '',
         AfterFirstStep : false,
         AfterFinalStep : false,
-        SmsToken : null,
+        SmsToken : null,   
         Waiting:false
     }
     this.Register=this.Register.bind(this);
@@ -55,11 +55,11 @@ class Register extends React.Component {
            var text = response.data.result; 
 
           if(isNaN(text)){
+            
           that.setState({
             HasError:text,
              Waiting:false
           })
-          alert(text);
           return;
         }
          
@@ -102,8 +102,8 @@ class Register extends React.Component {
 
                  
           }
-          let ECallBack = function(error){
-              alert(error)   
+          let ECallBack = function(error){   
+              alert(error)      
           }  
         
    that.Server.send("https://marketapi.sarvapps.ir/MainApi/GetNewPass",{
@@ -117,20 +117,23 @@ class Register extends React.Component {
 
     if(!that.state.AfterFirstStep){
 
-      if(that.state.Password != that.state.Password2){
-        that.setState({
-          HasError:"رمز عبور و تکرار آن متفاوت است"
+      if(that.state.password != that.state.password2){
+       
+        Toast.show({
+          text: "رمز عبور و تکرار آن متفاوت است",
+          textStyle: { fontFamily:'IRANSansMobile',textAlign:'center' },
+          type: "danger"
         })
         return;
       }
     let SCallBack = function(response){
-          console.log(response.data)
           if(response.data.result[0] && response.data.result[0].status=="1"){
-          that.setState({
-            HasError:"شماره موبایل وارد شده قبلا در سیستم ثبت شده است"
-          })
-          alert(that.state.HasError)
-          return;
+              Toast.show({
+                text: response.data.msg,
+                textStyle: { fontFamily:'IRANSansMobile',textAlign:'center' },
+                type: "danger"
+              })
+              return;
         }
         that.setState({
           AfterFirstStep : true
@@ -146,12 +149,16 @@ class Register extends React.Component {
                     that.setState({
                     SmsToken:response.data.result.TokenKey
                   })
+                  Toast.show({
+                    text: "کد امنیتی به "+that.state.username+" پیامک شد ",
+                    textStyle: { fontFamily:'IRANSansMobile',textAlign:'right' },
+                    type: "info"
+                  })
             that.Server.send("https://marketapi.sarvapps.ir/MainApi/sendsms",{
                     token: response.data.result.TokenKey,
                     text: "کد امنیتی ثبت نام در فروشگاه اینترنتی سرو : \n"+SecCode,
                     mobileNo : that.state.username
                   },function(response){
-                    alert(response)
 
 
 
@@ -165,50 +172,57 @@ class Register extends React.Component {
 
                  
           }
-          let ECallBack = function(error){
+          let ECallBack = function(error){      
               alert(error)   
-          }  
-        
+          }     
+        console.warn(that.state.password)
    that.Server.send("https://marketapi.sarvapps.ir/MainApi/Register",{
         username: that.state.username,
-        password: that.state.Password,
+        password: that.state.password,
         Step: "1"
       },SCallBack,ECallBack)
      
     }
 if(this.state.AfterFirstStep){
-     alert(1)
       if(this.state.SecurityCode == "" ){
-
-        this.setState({
-          HasError:"کد امنیتی پیامک شده را وارد کنید"
+        Toast.show({
+          text:"کد امنیتی پیامک شده را وارد کنید",
+          textStyle: { fontFamily:'IRANSansMobile',textAlign:'center' },
+          type: "danger"
         })
+
         return;
 
       }
 let SCallBack = function(response){
-   alert(2)
               if(response.data.msg){
-              that.setState({
-                HasError:response.data.msg
-              })
-              alert(response.data.msg)
+                Toast.show({
+                  text: response.data.msg,
+                  textStyle: { fontFamily:'IRANSansMobile',textAlign:'center' },
+                  type: "danger"
+                })
+            
               return;
             }
 
           that.Server.send("https://marketapi.sarvapps.ir/MainApi/Register",{
             username: that.state.username,
-            password: that.state.Password,
+            password: that.state.password,
             Step: "3"
           },function(response){
            // localStorage.setItem("api_token",response.data.token);
-
+           Toast.show({
+              text: "ثبت نام شما با موفقیت انجام شد",
+              textStyle: { fontFamily:'IRANSansMobile',textAlign:'right' },
+              type: "success"
+            })
             that.setState({
               AfterFinalStep : true
             })    
+            that.props.navigation.navigate('Login') 
 
             },function(error){
-                      alert(error)   
+               alert(error)   
             })
             
        }  
@@ -219,7 +233,7 @@ let SCallBack = function(response){
         
    that.Server.send("https://marketapi.sarvapps.ir/MainApi/Register",{
         username: that.state.username,
-        password: that.state.Password,
+        password: that.state.password,
         SecurityCode: that.state.SecurityCode,
         Step: "2"
       },SCallBack,ECallBack)
@@ -240,18 +254,8 @@ let SCallBack = function(response){
                             
     return (   
     <Container>
-      <Header>
-          <Left>
-            <Button transparent onPress={() => this.props.navigation.goBack()}>
-              <Icon name='arrow-back' />
-            </Button>
-          </Left>
-          <Body> 
-          </Body>
-          <Right>
-           
-          </Right>
-        </Header>
+              <HeaderBox navigation={this.props.navigation} title={'ثبت نام'} goBack={true} />
+
         <Content>
         <ScrollView>   
          {this.state.type=='' &&

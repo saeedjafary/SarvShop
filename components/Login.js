@@ -4,9 +4,10 @@ import { connect } from "react-redux"
 import Server from './Server.js'
 import { Image } from 'react-native';
 import moment from 'moment-jalaali'; 
-import { Container,Content, Header,Form,Item, View,Button, DeckSwiper, Card, CardItem, Thumbnail, Text, Left,Right, Body, Icon,Label,Input,Title } from 'native-base';
+import { Container,Content, Header,Form,Item, View,Button, Toast, Card, CardItem, Thumbnail, Text, Left,Right, Body, Icon,Label,Input,Title } from 'native-base';
 import { Col, Row, Grid } from 'react-native-easy-grid';
 import {AsyncStorage} from 'react-native';
+import HeaderBox from './HeaderBox.js'
 
 class Login extends React.Component {   
   constructor(props){   
@@ -14,7 +15,8 @@ class Login extends React.Component {
     this.state = {
       username:"",
       password:"",
-      Autenticated:false
+      Autenticated:false,
+      visibleLoader:false
     }
     this.Login = this.Login.bind(this);
     this.Server = new Server();
@@ -34,8 +36,20 @@ class Login extends React.Component {
  
   }
   Login() {
- let that = this;
+    let that = this;
     let SCallBack = function(response){
+          that.setState({
+            visibleLoader:false
+          })
+           if(!response.data.token){
+              Toast.show({
+                text: response.data.result[0],
+                textStyle: { fontFamily:'IRANSansMobile',textAlign:'right' },
+                type: "danger"
+              })
+              return;    
+           }
+              
            AsyncStorage.setItem('api_token', response.data.token);
            that.setState({
               Autenticated:true
@@ -45,16 +59,21 @@ class Login extends React.Component {
             CartNumber:response.data.CartNumber
           })
           that.props.navigation.navigate('Home',{p:'LoginTrue'}) 
-
+          
            //AsyncStorage.getItem('api_token').then((value) => alert(value))
 
                  
     } 
     let ECallBack = function(error){
+      that.setState({
+        visibleLoader:false
+       })
      alert(error)   
     }  
-        
-   this.Server.send("https://marketapi.sarvapps.ir/MainApi/getuser",       {username:this.state.username,password:this.state.password},SCallBack,ECallBack) 
+     this.setState({
+      visibleLoader:true
+     })   
+     this.Server.send("https://marketapi.sarvapps.ir/MainApi/getuser",       {username:this.state.username,password:this.state.password},SCallBack,ECallBack) 
   
   }
  
@@ -63,18 +82,8 @@ class Login extends React.Component {
                 
     return (   
     <Container>
-        <Header>
-          <Left>
-            <Button transparent onPress={() => this.props.navigation.goBack()}>
-              <Icon name='arrow-back' />
-            </Button>
-          </Left>
-          <Body> 
-          </Body>
-          <Right>
-           
-          </Right>
-        </Header>
+        <HeaderBox navigation={this.props.navigation} title={'ورود به سامانه'} goBack={true} />
+
         
         <Content>
         <ScrollView>
@@ -90,11 +99,12 @@ class Login extends React.Component {
                <Label style={{fontFamily:'IRANSansMobile'}}>رمز عبور</Label>
             </Item>
             <View style={{flex:1,flexDirection:'row',justifyContent:'center',marginBottom:25,marginTop:45}}>
-                <Button iconLeft success onPress={this.Login}>
+                <Button iconLeft success onPress={this.Login} >
                       <Icon name='arrow-back' />
                       <Text style={{fontFamily:'IRANSansMobile',textAlign:'center'}}>ورود</Text>
                     </Button>
             </View>  
+            
             <View style={{flex:1,flexDirection:'row',marginTop:60,justifyContent:'flex-start'}}>
             <View style={{flex:1,flexDirection:'row',justifyContent:'center',marginBottom:25,marginTop:15}}>
                 <Button iconLeft dark onPress={() => navigate('Register')}>
@@ -112,7 +122,14 @@ class Login extends React.Component {
            
            
           </Form>
-
+          {this.state.visibleLoader &&
+              <View style={{position:'absolute',left:'50%',bottom:100}}>
+              <Image style={{width:50,height:50,justifyContent: 'center',
+                alignItems: 'center'}}
+                              source={require('../assets/loading.gif')}
+                            />
+                          </View>
+              }
          </ScrollView> 
          </Content> 
      </Container>   

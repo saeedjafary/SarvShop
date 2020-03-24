@@ -201,15 +201,15 @@ class User extends React.Component {
       <Container>
       <HeaderBox navigation={this.props.navigation} title={'محیط کاربری'} goBack={true} NewCartNumber={this.state.CartNumber} />
 
-      <Segment>
+      <Segment style={{backgroundColor:'#eee'}}>
         <Button first active={this.state.selected === 1}  onPress={() => this.setState({ selected: 1 })}>
-          <Text style={{fontFamily:'IRANSansMobile'}} >تنظیمات</Text>
+          <Text style={{fontFamily:'IRANSansMobile',color:'#333'}} >تنظیمات</Text>
         </Button>
         <Button active={this.state.selected === 2}  onPress={() => this.setState({ selected: 2 })}>
-          <Text style={{fontFamily:'IRANSansMobile'}} >سفارشات</Text>
+          <Text style={{fontFamily:'IRANSansMobile',color:'#333'}} >سفارشات</Text>
         </Button>
         <Button last active={this.state.selected === 3}  onPress={() => this.setState({ selected: 3 })}>
-          <Text style={{fontFamily:'IRANSansMobile'}} >صورت حساب ها</Text>
+          <Text style={{fontFamily:'IRANSansMobile',color:'#333'}} >صورت حساب ها</Text>
         </Button>
       </Segment>
       <Content padder>
