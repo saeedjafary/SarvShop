@@ -62,7 +62,8 @@ class Register extends React.Component {
           })
           return;
         }
-         
+        var SmsPanel=2;
+        if(SmsPanel==1){
                   
             that.Server.send('https://marketapi.sarvapps.ir/MainApi/GetSmsToken',{
               "UserApiKey":"b684bd5c7cc186e5c870c19b",
@@ -100,6 +101,30 @@ class Register extends React.Component {
                       alert(error)   
             })
 
+           } else{
+
+            that.Server.send("https://marketapi.sarvapps.ir/MainApi/sendsms",{
+                    token: response.data.result.TokenKey,
+                    text: "رمز عبور جدید شما در سامانه ی فروشگاهی سرو : \n"+text+"\n در اولین فرصت رمز عبور خود را تغییر دهید",
+                    mobileNo : that.state.username
+                  },function(response){
+                    that.setState({
+                      Waiting:false,
+                      HasError:'رمز عبور جدید به شماره تلفن همراه شما ارسال شد'
+                    })     
+
+                
+                    console.log(response)
+
+
+
+                  },function(error){
+                      that.setState({
+                      Waiting:false
+                    })
+                      alert(error)   
+            })
+          }
                  
           }
           let ECallBack = function(error){   
@@ -138,9 +163,10 @@ class Register extends React.Component {
         that.setState({
           AfterFirstStep : true
         })  
-            var SecCode = response.data.SecurityCode;
+         var SecCode = response.data.SecurityCode;
          
-                  
+         var SmsPanel=2;
+        if(SmsPanel==1){      
             that.Server.send('https://marketapi.sarvapps.ir/MainApi/GetSmsToken',{
               "UserApiKey":"b684bd5c7cc186e5c870c19b",
               "SecretKey":"sj@907@4286"
@@ -169,6 +195,27 @@ class Register extends React.Component {
             },function(error){
                       alert(error)   
             })
+
+
+          }else{
+      
+            that.Server.send("https://marketapi.sarvapps.ir/MainApi/sendsms",{
+              token: response.data.result.TokenKey,
+              text: "کد امنیتی ثبت نام در فروشگاه اینترنتی سرو : \n"+SecCode,
+              mobileNo : that.state.username
+            },function(response){
+
+              Toast.show({
+                text: "کد امنیتی به "+that.state.username+" پیامک شد ",
+                textStyle: { fontFamily:'IRANSansMobile',textAlign:'right' },
+                type: "info"
+              })
+
+            },function(error){
+                alert(error)   
+           })
+          }
+    
 
                  
           }

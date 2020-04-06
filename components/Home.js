@@ -49,7 +49,7 @@ class Home extends React.Component {
             Products4:[],
             username:null,
             userId:null,
-            name:"",
+            name:"",  
             CartNumber:0,
             films: [],
             Cat:[],
@@ -60,6 +60,7 @@ class Home extends React.Component {
             CatData3:null,
             OffData:[],
             LoginTrue:false,
+            BestShops:null
     }
     this.openDrawer = this.openDrawer.bind(this)
     this.closeDrawer = this.closeDrawer.bind(this)
@@ -98,8 +99,11 @@ ConvertNumToFarsi(text){
     }  
   }
   componentDidMount() {
- let that = this;
-   
+    let that = this;
+    AsyncStorage.getItem('CartNumber').then((value) => that.props.dispatch({
+      type: 'LoginTrueUser',    
+      CartNumber:value
+    }))
     let SCallBack = function(response){
     if(response.data.result[0]){
      var HarajDate = response.data.result[0].HarajDate.split("/"),
@@ -180,7 +184,7 @@ let that = this;
           that.setState({          
             films:response.data.result    
           })
-          //that.getOffData()        
+          that.GetBestShop()        
         }   
     } 
     let ECallBack = function(error){      
@@ -205,7 +209,7 @@ let that = this;
   let ECallBack = function(error){
    alert(error + "3")   
   } 
-  this.Server.send("https://marketapi.sarvapps.ir/MainApi/getProducts",{type:"bestOff"},SCallBack,ECallBack)
+  this.Server.send("https://marketapi.sarvapps.ir/MainApi/getProducts",{type:"bestOff",limit:10},SCallBack,ECallBack)
  }
  getCats(){
    let that = this;
@@ -225,6 +229,22 @@ let that = this;
 
 
  }
+ GetBestShop(){
+  let that = this;
+  let SCallBack = function(response){
+     that.setState({
+        BestShops:response.data.result
+     })
+       
+        
+  } 
+  let ECallBack = function(error){
+   alert(error)   
+  } 
+  this.Server.send("https://marketapi.sarvapps.ir/MainApi/getShops",{ type: "best"},SCallBack,ECallBack)
+ 
+
+}
  getProductsPerCat(param,lastIndex){
   let that = this;
 
@@ -281,9 +301,17 @@ let that = this;
     const comp = (a, b) => a.toLowerCase().trim() === b.toLowerCase().trim();   
     return (  
      
-    <Container>   
-     
- <Drawer
+    <Container> 
+      {this.props.CartNumber != null &&  
+     <TouchableOpacity onPress={() => navigate('Shops')} style={{position:'absolute',bottom:0,zIndex:3,backgroundColor:'#ba6dc7',padding:10,width:'100%'}} >
+        <View >
+           <Text style={{textAlign:'center',fontFamily:'IRANSansMobile',color:'#fff'}}>
+            مشاهده سبد خرید ({this.ConvertNumToFarsi(this.props.CartNumber)}) 
+           </Text>    
+         </View> 
+         </TouchableOpacity>        
+  }
+      <Drawer
         side="right"
         ref={(ref) => { this.drawer = ref; }}
         content={<SideBar navigator={this.navigator} navigation={this.props.navigation} />}
@@ -336,6 +364,7 @@ let that = this;
             </TouchableOpacity>
           )}
         />
+        
         <View  style={{textAlign:'right'}}>
           {films.length > 0 ? (
             Home.renderFilm(films[0])
@@ -347,8 +376,35 @@ let that = this;
       </View>
     </View>
           </View>
-         
-       
+         {this.state.BestShops &&
+       <ScrollView horizontal  >
+          <Grid style={{marginBottom:20}}>
+          
+          <Row> 
+           {this.state.BestShops.data.map((v, i) => { 
+             return ( 
+             <Col onPress={() => navigate('Products', {id: v._id})}>
+                <View>
+                  {v.logo ?
+                  <Image source={{uri:'https://marketapi.sarvapps.ir/' + v.logo.split("public")[1]}} style={{height: 120, width: 120,marginRight: 2}}/>   
+                : 
+                <Image source={{uri:'http://www.youdial.in/ydlogo/nologo.png'}} style={{height: 120, width: 120,marginRight: 2}}/>   
+ 
+                }
+                  <View>
+                    <Text style={{textAlign:'center',fontFamily:'IRANSansMobile',fontSize:12,paddingBottom:5,paddingTop:10,color:'gray',width:120,whiteSpace:'nowrap',overflow:'hidden',textOverflow:'ellipsis'}} >{v.name}</Text>
+                  </View>
+                </View>
+             </Col>
+             )
+           })
+          }
+          </Row>
+
+          </Grid>
+          </ScrollView>
+  }
+
         <ScrollView >     
         
          
@@ -378,9 +434,9 @@ let that = this;
                   }
                   <View>
                     <Text style={{textAlign:'center',fontFamily:'IRANSansMobile',fontSize:12,paddingBottom:5,paddingTop:10,color:'gray',width:150,whiteSpace:'nowrap',overflow:'hidden',textOverflow:'ellipsis'}} >{this.ConvertNumToFarsi(v.title)}</Text>
-                    <Text style={{textAlign:'center',fontFamily:'IRANSansMobile',fontSize:14,color:'gray',width:150,whiteSpace:'nowrap',overflow:'hidden',textOverflow:'ellipsis',textDecorationLine:'line-through'}}>{this.ConvertNumToFarsi(v.price)} تومان</Text>
+                    <Text style={{textAlign:'center',fontFamily:'IRANSansMobile',fontSize:14,color:'gray',width:150,whiteSpace:'nowrap',overflow:'hidden',textOverflow:'ellipsis',textDecorationLine:'line-through'}}>{this.ConvertNumToFarsi(v.price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ","))} تومان</Text>
 
-                    <Text style={{textAlign:'center',fontFamily:'IRANSansMobile',fontSize:14,color:'#000',width:150,whiteSpace:'nowrap',overflow:'hidden',textOverflow:'ellipsis'}}>{this.ConvertNumToFarsi(v.price - ((v.price * v.off)/100))} تومان</Text>
+                    <Text style={{textAlign:'center',fontFamily:'IRANSansMobile',fontSize:14,color:'#000',width:150,whiteSpace:'nowrap',overflow:'hidden',textOverflow:'ellipsis'}}>{this.ConvertNumToFarsi((v.price - ((v.price * v.off)/100)).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ","))} تومان</Text>
                 <Text style={{textAlign:'center',fontFamily:'IRANSansMobile',fontSize:17,color:'red',width:150,whiteSpace:'nowrap',overflow:'hidden',textOverflow:'ellipsis'}}>{this.ConvertNumToFarsi(v.off)}% تخفیف </Text>
                   </View>
                 </View>
@@ -388,7 +444,7 @@ let that = this;
              )
            })
           }
-          </Row>
+          </Row>    
 
           </Grid>
           </ScrollView>
@@ -416,7 +472,7 @@ let that = this;
               {this.state.Products4[0].title}
                 </Text>
                 <Text style={{textAlign:'right',color:'#fff',fontFamily:'IRANSansMobile'}}>
-              {this.state.Products4[0].price - ((this.state.Products4[0].price * this.state.Products4[0].off)/100)} تومان
+                  {this.ConvertNumToFarsi((this.state.Products4[0].price - ((this.state.Products4[0].price * this.state.Products4[0].off)/100)).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ","))} تومان
 
                 </Text>
                 </View>
@@ -430,7 +486,7 @@ let that = this;
               {this.state.Products4[1].title}
                 </Text>
                 <Text style={{textAlign:'right',color:'#fff',fontFamily:'IRANSansMobile'}}>
-              {this.state.Products4[1].price - ((this.state.Products4[1].price * this.state.Products4[0].off)/100)} تومان
+              {this.ConvertNumToFarsi((this.state.Products4[1].price - ((this.state.Products4[1].price * this.state.Products4[0].off)/100)).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ","))} تومان
 
                 </Text>
                 </View>
@@ -448,7 +504,7 @@ let that = this;
               {this.state.Products4[2].title}
                 </Text>
                 <Text style={{textAlign:'right',color:'#fff',fontFamily:'IRANSansMobile'}}>
-              {this.state.Products4[2].price - ((this.state.Products4[2].price * this.state.Products4[0].off)/100)} تومان
+              {this.ConvertNumToFarsi((this.state.Products4[2].price - ((this.state.Products4[2].price * this.state.Products4[0].off)/100)).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ","))} تومان
 
                 </Text>
                 </View>
@@ -462,7 +518,7 @@ let that = this;
               {this.state.Products4[3].title}
                 </Text>
                 <Text style={{textAlign:'right',color:'#fff',fontFamily:'IRANSansMobile'}}>
-              {this.state.Products4[3].price - ((this.state.Products4[3].price * this.state.Products4[0].off)/100)} تومان
+              {this.ConvertNumToFarsi((this.state.Products4[3].price - ((this.state.Products4[3].price * this.state.Products4[0].off)/100)).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ","))} تومان
 
                 </Text>
                 </View>
@@ -471,6 +527,58 @@ let that = this;
           </Row>
           }
         </Grid>
+
+        
+        
+         
+          {this.state.MaxObj && this.state.MaxObj.length > 0 && 
+            <Grid style={{marginBottom:45}}>
+
+           <Row>
+           <Col>
+           <View style={{padding:5,width:'100%',marginTop:20,flex:1, flexDirection: 'row'}}>          
+             
+             <View style={{flexGrow: 1}}>
+                
+             </View>
+             <View style={{flexGrow: 9}}><Text style={{textAlign:'right',fontFamily:'IRANSansMobile'}}>
+                حراج روز
+             </Text></View> 
+          </View>
+           </Col>
+         </Row>  
+           
+           <Row>
+             <Col style={{height: 300 }}>   
+             <TouchableOpacity onPress={() => navigate('Products', {id: this.state.MaxObj[0]._id})}>
+                <View style={{flex:1, flexDirection: 'row',justifyContent:'space-between',padding:10,backgroundColor:'rgba(0,0,0,0.7)',width:200,position:'absolute',top:200,zIndex:2}}>      
+                    <View style={{padding:5}}>
+                        <Text style={{fontFamily:'IRANSansMobile',textAlign:'right',color:'#fff'}}>{this.ConvertNumToFarsi((this.state.MaxObj[0].price - ((this.state.MaxObj[0].price * this.state.MaxObj[0].off)/100)).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ","))} تومان</Text>
+                    </View>
+                    <View style={{borderRadius:30,backgroundColor:'red',padding:5}}>
+                    <Text style={{fontFamily:'IRANSansMobile',textAlign:'center',color:'#fff',fontSize:15}}>%{this.ConvertNumToFarsi(this.state.MaxObj[0].off)} </Text>
+
+                    </View>          
+                </View>             
+     
+             <View style={{padding:10}}>      
+               <Text style={{fontFamily:'IRANSansMobile',textAlign:'right',fontSize:25}}>{this.state.MaxObj[0].title}</Text>
+               <Text style={{fontFamily:'IRANSansMobile',textAlign:'right',marginTop:18,marginRight:20}} note >{this.state.MaxObj[0].subTitle}</Text>
+             </View>
+         
+           <Image source={{uri:this.state.maximg}} style={{height: 200, width: null}}/>
+       
+           <View style={{padding:10,margin:20}}>
+             <Text style={{color:'#333',fontFamily:'IRANSansMobile',textAlign:'center',fontSize:18}}> {this.ConvertNumToFarsi(this.state.day)} روز {this.ConvertNumToFarsi(this.state.hours)} ساعت  {this.ConvertNumToFarsi(this.state.minutes)} دقیقه {this.ConvertNumToFarsi(this.state.seconds)} ثانیه </Text>
+             
+           </View>   
+           </TouchableOpacity>
+           
+       </Col>
+          </Row>
+          </Grid>    
+
+          }
 
 
              {this.state.CatData1 &&
@@ -502,7 +610,7 @@ let that = this;
                   }
                   <View>
                     <Text style={{textAlign:'center',fontFamily:'IRANSansMobile',fontSize:12,paddingBottom:5,paddingTop:10,color:'gray',width:120,whiteSpace:'nowrap',overflow:'hidden',textOverflow:'ellipsis'}} >{v.title}</Text>
-                    <Text style={{textAlign:'center',fontFamily:'IRANSansMobile',fontSize:14,color:'gray',width:120}}>{v.price - ((v.price * v.off)/100)} تومان</Text>
+                    <Text style={{textAlign:'center',fontFamily:'IRANSansMobile',fontSize:14,color:'gray',width:120}}>{this.ConvertNumToFarsi((v.price - ((v.price * v.off)/100)).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ","))} تومان</Text>
                   </View>
                 </View>
              </Col>
@@ -545,7 +653,7 @@ let that = this;
                   }
                   <View>
                     <Text style={{textAlign:'center',fontFamily:'IRANSansMobile',fontSize:12,paddingBottom:5,paddingTop:10,color:'gray',width:120,whiteSpace:'nowrap',overflow:'hidden',textOverflow:'ellipsis'}} >{v.title}</Text>
-                    <Text style={{textAlign:'center',fontFamily:'IRANSansMobile',fontSize:14,color:'gray',width:120}}>{v.price - ((v.price * v.off)/100)} تومان</Text>
+                    <Text style={{textAlign:'center',fontFamily:'IRANSansMobile',fontSize:14,color:'gray',width:120}}>{this.ConvertNumToFarsi((v.price - ((v.price * v.off)/100)).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ","))} تومان</Text>
                   </View>
                 </View>
              </Col>
@@ -588,7 +696,7 @@ let that = this;
                   }
                   <View>
                     <Text style={{textAlign:'center',fontFamily:'IRANSansMobile',fontSize:12,paddingBottom:5,paddingTop:10,color:'gray',width:120,whiteSpace:'nowrap',overflow:'hidden',textOverflow:'ellipsis'}} >{v.title}</Text>
-                    <Text style={{textAlign:'center',fontFamily:'IRANSansMobile',fontSize:14,color:'gray',width:120}}>{v.price - ((v.price * v.off)/100)} تومان</Text>
+                    <Text style={{textAlign:'center',fontFamily:'IRANSansMobile',fontSize:14,color:'gray',width:120}}>{this.ConvertNumToFarsi((v.price - ((v.price * v.off)/100)).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ","))} تومان</Text>
                   </View>
                 </View>
              </Col>
@@ -631,7 +739,7 @@ let that = this;
                   }
                   <View>
                     <Text style={{textAlign:'center',fontFamily:'IRANSansMobile',fontSize:12,paddingBottom:5,paddingTop:10,color:'gray',width:120,whiteSpace:'nowrap',overflow:'hidden',textOverflow:'ellipsis'}} >{v.title}</Text>
-                    <Text style={{textAlign:'center',fontFamily:'IRANSansMobile',fontSize:14,color:'gray',width:120}}>{v.price - ((v.price * v.off)/100)} تومان</Text>
+                    <Text style={{textAlign:'center',fontFamily:'IRANSansMobile',fontSize:14,color:'gray',width:120}}>{this.ConvertNumToFarsi((v.price - ((v.price * v.off)/100)).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ","))} تومان</Text>
                   </View>
                 </View>
              </Col>
@@ -643,43 +751,7 @@ let that = this;
           </Grid>
 
           
-          <Grid >
-          
-             <Row>
-                <Col>
-             
-                </Col>
-             </Row>  
-             {this.state.MaxObj && this.state.MaxObj.length > 0 &&   
-              <Row >
-                <Col style={{height: 300 }}>
-        <Card>
-            <CardItem>
-              <Left>
-                <Thumbnail source={{uri:'https://www.pizzagooshe.com/Content/UploadFiles/contents/LG_7f48205b-a12c-4dde-a99b-f7a5b5eb022e.png'}} />
-                </Left>
-
-                <Body>      
-                  <Text style={{fontFamily:'IRANSansMobile'}}>{this.state.MaxObj[0].title}</Text>
-                  <Text style={{fontFamily:'IRANSansMobile'}} note>{this.state.MaxObj[0].subTitle}</Text>
-                </Body>
-            </CardItem>
-            <CardItem cardBody>
-              <Image source={{uri:this.state.maximg}} style={{height: 200, width: null, flex: 1}}/>
-            </CardItem>
-            <CardItem>
-              
- <Body style={{position:'absolute',bottom:50,right:0,backgroundColor:'rgba(0,0,0,0.5)',direction:'rtl',padding:5}}>
-               <Text style={{color:'#fff',fontFamily:'IRANSansMobile'}}>حراج روز</Text>
-                <Text style={{color:'yellow',fontFamily:'IRANSansMobile'}}> {this.state.day} روز {this.state.hours} ساعت  {this.state.minutes} دقیقه {this.state.seconds} ثانیه </Text>
-                
-              </Body>    
-            </CardItem>
-          </Card>
-          </Col>
-             </Row>
-             }
-             </Grid> 
+         
           </ScrollView>
           </View>
         }
@@ -687,7 +759,7 @@ let that = this;
          
 
          
-             <Grid>
+             <Grid style={{marginBottom:50}}>
              {this.state.Products.length>0 &&
              <Row>  
              <Col style={{  height: 300 }}>  

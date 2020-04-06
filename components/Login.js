@@ -35,6 +35,31 @@ class Login extends React.Component {
  
  
   }
+  getCartNumber(id){
+    let that=this;
+    
+    let param={
+          UId : id
+    };
+
+    let SCallBack = function(response){
+            var CartNumber=0;
+            response.data.result.map((res,index) =>{
+                CartNumber+=parseInt(res.number);
+            })     
+            AsyncStorage.setItem('CartNumber',CartNumber.toString());
+             that.props.dispatch({
+                type: 'LoginTrueUser',    
+                CartNumber:CartNumber
+              })
+                 
+
+     };
+     let ECallBack = function(error){
+            alert(error)
+    }
+    this.Server.send("https://marketapi.sarvapps.ir/MainApi/getCartPerId",param,SCallBack,ECallBack)
+  }
   Login() {
     let that = this;
     let SCallBack = function(response){
@@ -47,13 +72,20 @@ class Login extends React.Component {
                 textStyle: { fontFamily:'IRANSansMobile',textAlign:'right' },
                 type: "danger"
               })
-              return;    
+              return;       
            }
-              
+           that.getCartNumber(response.data.result[0]._id)   
            AsyncStorage.setItem('api_token', response.data.token);
            that.setState({
               Autenticated:true
            }) 
+           console.warn(response.data.CartNumber)
+           
+
+
+
+
+           
            that.props.dispatch({
             type: 'LoginTrueUser',    
             CartNumber:response.data.CartNumber
@@ -73,7 +105,7 @@ class Login extends React.Component {
      this.setState({
       visibleLoader:true
      })   
-     this.Server.send("https://marketapi.sarvapps.ir/MainApi/getuser",       {username:this.state.username,password:this.state.password},SCallBack,ECallBack) 
+     this.Server.send("https://marketapi.sarvapps.ir/MainApi/getuser",{username:this.state.username,password:this.state.password},SCallBack,ECallBack) 
   
   }
  

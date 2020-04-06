@@ -92,8 +92,13 @@ class HeaderBox extends React.Component {
   }
    logout(){    
     AsyncStorage.setItem('api_token',"");
+    AsyncStorage.setItem('CartNumber',"");
     this.setState({
       username:null  
+    })
+    this.props.dispatch({
+      type: 'LoginTrueUser',    
+      CartNumber:0
     })
   }
  refresh(){
@@ -140,7 +145,7 @@ class HeaderBox extends React.Component {
           <TouchableOpacity onPress={() => { navigate('Cart', {
             onGoBack: () => this.refresh(),
          })}}>
-              <View  ><Text style={{fontFamily:'IRANSansMobile',color:'#1abc9c',marginTop:7}}><Icon type="Ionicons" name="cart" style={{fontSize: 30, color: '#1abc9c'}}/> ({this.ConvertNumToFarsi(this.state.CartNumber)}) </Text></View>
+              <View  ><Text style={{fontFamily:'IRANSansMobile',color:'#1abc9c',marginTop:7,display:'none'}}><Icon type="Ionicons" name="cart" style={{fontSize: 30, color: '#1abc9c'}}/> ({this.ConvertNumToFarsi(this.state.CartNumber)}) </Text></View>
             </TouchableOpacity>
          
          }
@@ -206,7 +211,7 @@ class HeaderBox extends React.Component {
           <TouchableOpacity onPress={() => { navigate('Cart', {
               onGoBack: () => this.refresh(),
           })}}>
-              <View  ><Text style={{fontFamily:'IRANSansMobile',color:'#1abc9c'}}><Icon type="Ionicons" name="cart" style={{fontSize: 30, color: '#1abc9c'}} /> ({this.ConvertNumToFarsi(this.state.CartNumber)}) </Text></View>
+              <View  ><Text style={{fontFamily:'IRANSansMobile',color:'#1abc9c',display:'none'}}><Icon type="Ionicons" name="cart" style={{fontSize: 30, color: '#1abc9c'}} /> ({this.ConvertNumToFarsi(this.state.CartNumber)}) </Text></View>
             </TouchableOpacity>
           }
     </Right>  

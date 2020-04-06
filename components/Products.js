@@ -76,6 +76,7 @@ class Products extends React.Component {
     this.Server.send("https://marketapi.sarvapps.ir/MainApi/checktoken",{
       token:this.state.api_token   
     },function(response){
+      console.warn(response)
       let SCallBack = function(response){
              that.props.navigation.navigate('Cart',{p:'a'}) 
     } 
@@ -153,10 +154,18 @@ class Products extends React.Component {
         
                        
     return (   
-    <Container>
+    <Container >
+       <TouchableOpacity onPress={() => navigate('Cart')} style={{position:'absolute',bottom:0,zIndex:3,backgroundColor:'#ba6dc7',padding:10,width:'100%'}} >
+        <View >
+           <Text style={{textAlign:'center',fontFamily:'IRANSansMobile',color:'#fff'}}>
+            مشاهده سبد خرید ({this.ConvertNumToFarsi(this.props.CartNumber)}) 
+           </Text>    
+         </View> 
+         </TouchableOpacity> 
         <HeaderBox navigation={this.props.navigation} title={'محصولات'} goBack={true} />
         
         <Content>
+        
         <ScrollView>
         {this.state.Products.length>0 &&
         <View >
@@ -171,7 +180,7 @@ class Products extends React.Component {
                 </View>
                 
                 <View  style={{flex:1,flexDirection:'row',justifyContent:'center'}}>
-                  <Text style={{padding:5,borderRadius:5,margin:5,fontFamily:'IRANSansMobile',textAlign:'center',padding:10,textDecorationLine:'line-through'}}>{this.state.Products[0].off ? this.ConvertNumToFarsi(this.state.Products[0].price) + "تومان" : "" } </Text>
+                  <Text style={{padding:5,borderRadius:5,margin:5,fontFamily:'IRANSansMobile',textAlign:'center',padding:10,textDecorationLine:'line-through'}}>{this.state.Products[0].off ? this.ConvertNumToFarsi(this.state.Products[0].price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")) + "تومان" : "" } </Text>
                 </View>
                 {
                  this.state.Products[0].off !="0" &&
@@ -184,7 +193,7 @@ class Products extends React.Component {
                 }
                 <View  style={{flex:1,flexDirection:'row',justifyContent:'center',marginBottom:5}}>
                 <View style={{borderRadius:5}}>
-                  <Text style={{backgroundColor:'#333',padding:5,fontFamily:'IRANSansMobile',textAlign:'center',paddingTop:10,paddingBottom:10,paddingRight:20,paddingLeft:20,color:'#fff',fontSize:25,marginTop:20,marginBottom:10}}>{this.ConvertNumToFarsi(this.state.Products[0].price - ((this.state.Products[0].price * this.state.Products[0].off)/100))} تومان</Text>
+                  <Text style={{backgroundColor:'#333',padding:5,fontFamily:'IRANSansMobile',textAlign:'center',paddingTop:10,paddingBottom:10,paddingRight:20,paddingLeft:20,color:'#fff',fontSize:25,marginTop:20,marginBottom:10}}>{this.ConvertNumToFarsi((this.state.Products[0].price - ((this.state.Products[0].price * this.state.Products[0].off)/100)).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ","))} تومان</Text>
                 </View>
                 </View>
                 {this.state.Products[0].desc !="-" &&
@@ -273,13 +282,15 @@ class Products extends React.Component {
           <TouchableOpacity  onPress={() => this.ChangeCount(-1)}><Text style={{fontFamily:'IRANSansMobile',fontSize:40,textAlign:'center'}}>-</Text></TouchableOpacity>
       </View>
   </View>
-  <View style={{flex:1,flexDirection:'row',justifyContent:'center',margin:15}}>
+  <View style={{flex:1,flexDirection:'row',justifyContent:'center',margin:15,marginBottom:50}}>
       <Button iconLeft success onPress={() => this.SendToCart()}>
             <Icon name='cart' />
             <Text style={{fontFamily:'IRANSansMobile',textAlign:'center'}}>انتقال به سبد خرید</Text>
           </Button>
   </View>
+ 
          </ScrollView> 
+         
          </Content> 
      </Container>             
     
@@ -291,7 +302,7 @@ class Products extends React.Component {
 
 function mapStateToProps(state) {        
   return {
-    username : state.username
+    CartNumber : state.CartNumber
   }
 }
 export default connect(mapStateToProps)(Products)  

@@ -19,12 +19,15 @@ class Cart extends React.Component {
             lastPrice:"0",
             GridData:null,
             CartNumber:null,
-            ItemCount:[]
+            ItemCount:[],
+            GoToBank:false
 
 
     }
     this.Payment = this.Payment.bind(this);
+    this.AfterPayment = this.AfterPayment.bind(this);
 
+    
 
     
    
@@ -34,16 +37,20 @@ class Cart extends React.Component {
          let that = this;
         let products_id=[];
         for(let i=0;i<this.state.GridData.length;i++){
-            products_id.push({_id:this.state.GridData[i].product_id,number:this.state.GridData[i].number,title:this.state.GridData[i].products[0].title,subTitle:this.state.GridData[i].products[0].subTitle,desc:this.state.GridData[i].products[0].desc});
+            products_id.push({_id:this.state.GridData[i].product_id,number:this.state.GridData[i].number,title:this.state.GridData[i].products[0].title,subTitle:this.state.GridData[i].products[0].subTitle,desc:this.state.GridData[i].products[0].desc,price:(this.state.GridData[i].number*this.state.GridData[i].price),SellerId:this.state.GridData[i].products[0].SellerId});
         }
         let param={    
               Amount: this.state.lastPrice,
               userId:this.state.UserId,
-              products_id:products_id
+              products_id:products_id,
+              InMobileApp:"1"
         };   
         let SCallBack = function(response){                      
                console.log(response.data.result) 
                let res =response.data.result;
+               that.setState({
+                GoToBank:true   
+              })
                Linking.openURL(res)                               
 
              //  window.location = res;
@@ -118,6 +125,12 @@ class Cart extends React.Component {
      return id[+w]
     });
   }
+  AfterPayment(){
+    this.setState({
+      GoToBank:false
+    })
+    this.getCartItems();
+  }
   getCartItems(){
         let that=this;
         this.setState({
@@ -148,7 +161,7 @@ class Cart extends React.Component {
                     type: 'LoginTrueUser',    
                     CartNumber:that.state.CartNumber
                   })
-                
+                     
     
          };
          let ECallBack = function(error){
@@ -162,17 +175,45 @@ class Cart extends React.Component {
                        
     return (   
     <Container>
-<HeaderBox navigation={this.props.navigation} title={'سبد خرید'} goBack={true} NewCartNumber={this.state.CartNumber} />
+      <HeaderBox navigation={this.props.navigation} title={'سبد خرید'} goBack={true} NewCartNumber={this.state.CartNumber} />
         
         <Content>
+          {this.state.GoToBank &&
+          <View style={{position:'absolute',width:'100%',height:1000,backgroundColor:'rgba(0,0,0,0.7)',zIndex:2}}>
+           <View style={{backgroundColor:'#ccc',marginTop:200,height:220,margin:10,borderRadius:5}}>
+           <View style={{paddingTop:50}}>
+              <Text style={{fontFamily:'IRANSansMobile',textAlign:'center'}}>در حال اتصال به بانک</Text>
+            </View>
+            <View style={{flex:1,flexDirection:'row',justifyContent:'center',marginBottom:25,marginTop:15}}>
+              <Image style={{width:50,height:50,justifyContent: 'center',
+                  alignItems: 'center'}}
+                  source={require('../assets/loading.gif')}
+                />
+              </View>
+            <View style={{flex:1,flexDirection:'row',justifyContent:'center',marginBottom:50,marginTop:15}}>
+
+            <Button  dark onPress={this.AfterPayment} >
+                  <Text style={{fontFamily:'IRANSansMobile',textAlign:'center'}}>انجام شد</Text>
+                </Button>
+           </View>
+             </View> 
+          </View>
+
+          }
+        <View style={{backgroundColor:'#ba6dc7',padding:10,width:'100%'}}>
+           <Text style={{textAlign:'center',fontFamily:'IRANSansMobile',color:'#fff'}}>
+            تعداد محصولات سبد خرید : {this.ConvertNumToFarsi(this.props.CartNumber)}
+           </Text>    
+         </View> 
         <ScrollView>
+          <View style={{height:200}} >
         {this.state.lastPrice !="0" &&
-          <View>
+          <View >      
           
               <View style={{marginTop:25}}>
               <Text   style={{fontFamily:"IRANSansMobile",textAlign:'center',marginTop:10,marginBottom:10}}>
                   مبلغ قابل پرداخت  
-                  &nbsp;&nbsp;<Text style={{fontFamily:"IRANSansMobile",fontSize:25,color:'red'}}>{this.ConvertNumToFarsi(this.state.lastPrice)}</Text> &nbsp;&nbsp; 
+                  &nbsp;&nbsp;<Text style={{fontFamily:"IRANSansMobile",fontSize:25,color:'red'}}>{this.ConvertNumToFarsi(this.state.lastPrice.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ","))}</Text> &nbsp;&nbsp; 
                   تومان
               </Text>
               </View>
@@ -186,8 +227,10 @@ class Cart extends React.Component {
         
         </View>
           }
+                  </View>
+
           {this.state.lastPrice =="0" && this.state.CartNumber == 0 &&
-          <View style={{marginTop:100}}>
+          <View >
      
           <Text   style={{fontFamily:"IRANSansMobile",textAlign:'center',marginTop:10,marginBottom:10}}>
                         سبد خرید خالی است

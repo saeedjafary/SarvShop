@@ -16,6 +16,7 @@ import * as Font from 'expo-font';
 import {View,Text} from 'react-native'             
 import { Root } from "native-base";
 import {Platform, StyleSheet} from 'react-native';
+import Shops from './components/Shops'
 
 import {                          
   createAppContainer
@@ -43,6 +44,15 @@ const AppStackNavigator = createStackNavigator({
   }, 
   Products: {                                                   
     screen: Products ,                            
+    mode: 'screen',       
+    headerMode: 'none',
+    navigationOptions: {                    
+        header:null,           
+        headerVisible: false,
+    }
+  },
+  Shops: {                                                   
+    screen: Shops ,                            
     mode: 'screen',       
     headerMode: 'none',
     navigationOptions: {                    
@@ -106,7 +116,7 @@ export default class App extends React.Component {
     super(props);
     this.state = {           
       loading: true,
-      fontLoaded:true
+      fontLoaded:false
 
     }
   }    
