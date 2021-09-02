@@ -10,7 +10,7 @@
   "dependencies": {
     "@react-native-mapbox-gl/maps": "^8.0.0-rc2",
     "@react-navigation/drawer": "^5.0.0",
-    "axios": "^0.19.0",
+    "axios": "^0.21.1",
     "deprecated-react-native-listview": "0.0.6",
     "exp": "^57.2.1",
     "expo": "^36.0.0",
